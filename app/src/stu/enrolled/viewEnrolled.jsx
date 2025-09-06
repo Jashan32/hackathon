@@ -373,6 +373,50 @@ export default function ViewEnrolled() {
                 </div>
             </div>
 
+            {/* Curriculum Overview */}
+            <div className="bg-[#1d1d1d] border border-white/10 rounded-[12px] p-[24px]">
+                <h3 className="text-white text-[18px] font-semibold mb-[16px]">Curriculum Overview</h3>
+                <div className="space-y-[12px]">
+                    {course.curriculum.slice(0, 3).map((section, index) => {
+                        const completedLectures = section.lectures.filter(lecture => {
+                            const lectureProgressData = lectureProgress[lecture._id] || {};
+                            return lectureProgressData.completed || lecture.completed;
+                        }).length;
+                        const sectionProgress = section.lectures.length > 0 ? Math.round((completedLectures / section.lectures.length) * 100) : 0;
+                        
+                        return (
+                            <div key={section._id} className="flex items-center justify-between p-[16px] bg-[#383838] rounded-[8px]">
+                                <div className="flex-1">
+                                    <h4 className="text-white text-[14px] font-medium mb-[4px]">
+                                        Section {index + 1}: {section.title}
+                                    </h4>
+                                    <p className="text-[#888888] text-[12px]">
+                                        {completedLectures}/{section.lectures.length} lectures completed
+                                    </p>
+                                </div>
+                                <div className="flex items-center gap-[12px]">
+                                    <span className="text-[#e43b58] text-[14px] font-semibold">{sectionProgress}%</span>
+                                    <div className="w-[60px] bg-[#1d1d1d] rounded-full h-[4px]">
+                                        <div 
+                                            className="bg-[#e43b58] h-[4px] rounded-full transition-all duration-300"
+                                            style={{ width: `${sectionProgress}%` }}
+                                        ></div>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })}
+                    {course.curriculum.length > 3 && (
+                        <button
+                            onClick={() => setActiveTab('curriculum')}
+                            className="w-full text-[#e43b58] text-[14px] font-medium hover:text-[#c73650] transition-colors text-center py-[8px]"
+                        >
+                            View all {course.curriculum.length} sections →
+                        </button>
+                    )}
+                </div>
+            </div>
+
             {/* Achievements */}
             <div className="bg-[#1d1d1d] border border-white/10 rounded-[12px] p-[24px]">
                 <h3 className="text-white text-[18px] font-semibold mb-[16px]">Achievements</h3>
@@ -397,74 +441,153 @@ export default function ViewEnrolled() {
         </div>
     );
 
-    const renderCurriculumTab = () => (
-        <div className="space-y-[16px]">
-            {course.curriculum.map((section, sectionIndex) => (
-                <div key={section._id} className="bg-[#1d1d1d] border border-white/10 rounded-[12px] overflow-hidden">
-                    <div className="bg-[#383838] px-[20px] py-[16px]">
-                        <h3 className="text-white text-[16px] font-semibold">
-                            Section {sectionIndex + 1}: {section.title}
-                        </h3>
-                        <p className="text-[#888888] text-[14px] mt-[4px]">
-                            {section.lectures.length} lectures
-                        </p>
-                    </div>
-                    <div className="divide-y divide-white/10">
-                        {section.lectures.map((lecture, lectureIndex) => {
-                            const lectureProgressData = lectureProgress[lecture._id] || {};
-                            return (
-                                <div key={lecture._id} className="p-[20px] hover:bg-[#383838] transition-colors">
-                                    <div className="flex items-center gap-[16px]">
-                                        <div className="w-[32px] h-[32px] flex items-center justify-center">
-                                            {lectureProgressData.completed || lecture.completed ? (
-                                                <CheckCircle className="size-[20px] text-green-500" />
-                                            ) : (lectureProgressData.locked !== false && lecture.locked) ? (
-                                                <Lock className="size-[20px] text-[#888888]" />
-                                            ) : (
-                                                <Circle className="size-[20px] text-[#888888]" />
-                                            )}
-                                        </div>
-                                        <div className="flex-1">
-                                            <div className="flex items-center gap-[8px] mb-[4px]">
-                                                <h4 className={`text-[14px] font-medium ${(lectureProgressData.locked !== false && lecture.locked) ? 'text-[#888888]' : 'text-white'}`}>
-                                                    {lectureIndex + 1}. {lecture.title}
-                                                </h4>
-                                                {lecture.isPreview && (
-                                                    <span className="bg-[#e43b58] text-white text-[10px] px-[6px] py-[1px] rounded-full">
-                                                        Preview
-                                                    </span>
-                                                )}
-                                            </div>
-                                            <div className="flex items-center gap-[12px] text-[12px] text-[#888888]">
-                                                <div className="flex items-center gap-[4px]">
-                                                    <Video className="size-[12px]" />
-                                                    <span>{lecture.duration}</span>
-                                                </div>
-                                                {lecture.description && (
-                                                    <span className="truncate">{lecture.description}</span>
-                                                )}
-                                            </div>
-                                        </div>
-                                        <button
-                                            onClick={() => navigate(`/dashboard/stu/courses/${courseId}/content/${lecture._id}`)}
-                                            disabled={lectureProgressData.locked !== false && lecture.locked}
-                                            className={`w-[40px] h-[40px] rounded-[8px] flex items-center justify-center transition-colors ${
-                                                (lectureProgressData.locked !== false && lecture.locked)
-                                                    ? 'bg-[#383838] cursor-not-allowed'
-                                                    : 'bg-[#e43b58] hover:bg-[#c73650]'
-                                            }`}
-                                        >
-                                            <PlayCircle className={`size-[20px] ${(lectureProgressData.locked !== false && lecture.locked) ? 'text-[#888888]' : 'text-white'}`} />
-                                        </button>
+    const renderCurriculumTab = () => {
+        // Calculate section progress
+        const getSectionProgress = (section) => {
+            const completedLectures = section.lectures.filter(lecture => {
+                const lectureProgressData = lectureProgress[lecture._id] || {};
+                return lectureProgressData.completed || lecture.completed;
+            }).length;
+            return section.lectures.length > 0 ? Math.round((completedLectures / section.lectures.length) * 100) : 0;
+        };
+
+        // Calculate section duration
+        const getSectionDuration = (section) => {
+            const totalSeconds = section.lectures.reduce((total, lecture) => {
+                const [minutes, seconds] = lecture.duration.split(':').map(Number);
+                return total + (minutes * 60) + seconds;
+            }, 0);
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            return hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
+        };
+
+        // Get lecture type icon
+        const getLectureTypeIcon = (type) => {
+            switch (type) {
+                case 'video': return Video;
+                case 'document': return FileText;
+                case 'quiz': return Target;
+                case 'assignment': return BookOpen;
+                default: return Video;
+            }
+        };
+
+        return (
+            <div className="space-y-[16px]">
+                {course.curriculum.map((section, sectionIndex) => {
+                    const sectionProgress = getSectionProgress(section);
+                    const sectionDuration = getSectionDuration(section);
+                    
+                    return (
+                        <div key={section._id} className="bg-[#1d1d1d] border border-white/10 rounded-[12px] overflow-hidden">
+                            <div className="bg-[#383838] px-[20px] py-[16px]">
+                                <div className="flex items-center justify-between mb-[8px]">
+                                    <h3 className="text-white text-[16px] font-semibold">
+                                        Section {sectionIndex + 1}: {section.title}
+                                    </h3>
+                                    <span className="text-[#e43b58] text-[14px] font-semibold">{sectionProgress}%</span>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-[16px] text-[#888888] text-[14px]">
+                                        <span>{section.lectures.length} lectures</span>
+                                        <span>{sectionDuration}</span>
+                                    </div>
+                                    <div className="w-[100px] bg-[#1d1d1d] rounded-full h-[4px]">
+                                        <div 
+                                            className="bg-[#e43b58] h-[4px] rounded-full transition-all duration-300"
+                                            style={{ width: `${sectionProgress}%` }}
+                                        ></div>
                                     </div>
                                 </div>
-                            );
-                        })}
-                    </div>
-                </div>
-            ))}
-        </div>
-    );
+                                {section.description && (
+                                    <p className="text-[#cccccc] text-[13px] mt-[8px] leading-relaxed">
+                                        {section.description}
+                                    </p>
+                                )}
+                            </div>
+                            <div className="divide-y divide-white/10">
+                                {section.lectures.map((lecture, lectureIndex) => {
+                                    const lectureProgressData = lectureProgress[lecture._id] || {};
+                                    const LectureIcon = getLectureTypeIcon(lecture.type);
+                                    const isCompleted = lectureProgressData.completed || lecture.completed;
+                                    const isLocked = lectureProgressData.locked !== false && lecture.locked;
+                                    const watchTime = lectureProgressData.watchTime || 0;
+                                    
+                                    return (
+                                        <div key={lecture._id} className="p-[20px] hover:bg-[#383838] transition-colors">
+                                            <div className="flex items-center gap-[16px]">
+                                                <div className="w-[32px] h-[32px] flex items-center justify-center">
+                                                    {isCompleted ? (
+                                                        <CheckCircle className="size-[20px] text-green-500" />
+                                                    ) : isLocked ? (
+                                                        <Lock className="size-[20px] text-[#888888]" />
+                                                    ) : (
+                                                        <Circle className="size-[20px] text-[#888888]" />
+                                                    )}
+                                                </div>
+                                                <div className="flex-1">
+                                                    <div className="flex items-center gap-[8px] mb-[4px]">
+                                                        <h4 className={`text-[14px] font-medium ${isLocked ? 'text-[#888888]' : 'text-white'}`}>
+                                                            {lectureIndex + 1}. {lecture.title}
+                                                        </h4>
+                                                        <div className="flex items-center gap-[4px]">
+                                                            {lecture.isPreview && (
+                                                                <span className="bg-[#e43b58] text-white text-[10px] px-[6px] py-[1px] rounded-full">
+                                                                    Preview
+                                                                </span>
+                                                            )}
+                                                            {!lecture.isPublished && (
+                                                                <span className="bg-yellow-600 text-white text-[10px] px-[6px] py-[1px] rounded-full">
+                                                                    Draft
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex items-center gap-[12px] text-[12px] text-[#888888] mb-[4px]">
+                                                        <div className="flex items-center gap-[4px]">
+                                                            <LectureIcon className="size-[12px]" />
+                                                            <span className="capitalize">{lecture.type}</span>
+                                                        </div>
+                                                        <div className="flex items-center gap-[4px]">
+                                                            <Clock className="size-[12px]" />
+                                                            <span>{lecture.duration}</span>
+                                                        </div>
+                                                        {watchTime > 0 && (
+                                                            <div className="flex items-center gap-[4px]">
+                                                                <Eye className="size-[12px]" />
+                                                                <span>{Math.floor(watchTime / 60)}min watched</span>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                    {lecture.description && (
+                                                        <p className="text-[#888888] text-[12px] truncate">
+                                                            {lecture.description}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                                <button
+                                                    onClick={() => navigate(`/dashboard/stu/courses/${courseId}/content/${lecture._id}`)}
+                                                    disabled={isLocked}
+                                                    className={`w-[40px] h-[40px] rounded-[8px] flex items-center justify-center transition-colors ${
+                                                        isLocked
+                                                            ? 'bg-[#383838] cursor-not-allowed'
+                                                            : 'bg-[#e43b58] hover:bg-[#c73650]'
+                                                    }`}
+                                                >
+                                                    <PlayCircle className={`size-[20px] ${isLocked ? 'text-[#888888]' : 'text-white'}`} />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
+        );
+    };
 
     const renderProgressTab = () => (
         <div className="space-y-[24px]">

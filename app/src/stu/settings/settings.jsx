@@ -32,7 +32,9 @@ export default function StuSettings() {
             promotions: false
         },
         learningGoals: '',
-        preferredLanguage: 'english'
+        preferredLanguage: 'english',
+        studyReminders: false,
+        weeklyGoalHours: 5
     });
 
     const [errors, setErrors] = useState({});
@@ -40,6 +42,7 @@ export default function StuSettings() {
 
     useEffect(() => {
         fetchUserProfile();
+        fetchLearningPreferences();
     }, []);
 
     const fetchUserProfile = async () => {
@@ -65,6 +68,24 @@ export default function StuSettings() {
             console.error('Failed to fetch profile:', error);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const fetchLearningPreferences = async () => {
+        try {
+            const response = await fetch('http://localhost:3000/api/auth/learning-preferences', {
+                headers: {
+                    'authorization': localStorage.getItem('token'),
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setPreferencesData(data.preferences);
+            }
+        } catch (error) {
+            console.error('Failed to fetch learning preferences:', error);
         }
     };
 
@@ -113,7 +134,7 @@ export default function StuSettings() {
         } else {
             setPreferencesData(prev => ({
                 ...prev,
-                [name]: type === 'checkbox' ? checked : value
+                [name]: type === 'checkbox' ? checked : (type === 'number' ? Number(value) : value)
             }));
         }
     };
@@ -309,16 +330,62 @@ export default function StuSettings() {
         setSuccessMessage('');
         
         try {
-            // In a real app, you'd have a separate endpoint for preferences
-            // For now, we'll just show success
-            setTimeout(() => {
+            const response = await fetch('http://localhost:3000/api/auth/learning-preferences', {
+                method: 'PUT',
+                headers: {
+                    'authorization': localStorage.getItem('token'),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(preferencesData)
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setPreferencesData(data.preferences);
                 setSuccessMessage('Preferences updated successfully!');
                 setTimeout(() => setSuccessMessage(''), 3000);
-                setSaving(false);
-            }, 500);
+            } else {
+                const errorData = await response.json();
+                setErrors({ submit: errorData.error || 'Failed to update preferences' });
+            }
         } catch (error) {
             console.error('Preferences update error:', error);
             setErrors({ submit: 'Network error. Please try again.' });
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    const handleResetPreferences = async () => {
+        if (!confirm('Are you sure you want to reset all learning preferences to default? This action cannot be undone.')) {
+            return;
+        }
+
+        setSaving(true);
+        setSuccessMessage('');
+        
+        try {
+            const response = await fetch('http://localhost:3000/api/auth/learning-preferences/reset', {
+                method: 'POST',
+                headers: {
+                    'authorization': localStorage.getItem('token'),
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setPreferencesData(data.preferences);
+                setSuccessMessage('Preferences reset to default successfully!');
+                setTimeout(() => setSuccessMessage(''), 3000);
+            } else {
+                const errorData = await response.json();
+                setErrors({ submit: errorData.error || 'Failed to reset preferences' });
+            }
+        } catch (error) {
+            console.error('Reset preferences error:', error);
+            setErrors({ submit: 'Network error. Please try again.' });
+        } finally {
             setSaving(false);
         }
     };
@@ -735,6 +802,23 @@ export default function StuSettings() {
                                             <div className="w-11 h-6 bg-[#383838] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#e43b58]"></div>
                                         </label>
                                     </div>
+
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <h4 className="text-white text-[16px] font-medium">Study Reminders</h4>
+                                            <p className="text-[#888888] text-[14px]">Get daily reminders to maintain your learning streak</p>
+                                        </div>
+                                        <label className="relative inline-flex items-center cursor-pointer">
+                                            <input
+                                                type="checkbox"
+                                                name="studyReminders"
+                                                checked={preferencesData.studyReminders}
+                                                onChange={handlePreferencesChange}
+                                                className="sr-only peer"
+                                            />
+                                            <div className="w-11 h-6 bg-[#383838] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#e43b58]"></div>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
 
@@ -775,9 +859,33 @@ export default function StuSettings() {
                                             <option value="japanese">Japanese</option>
                                         </select>
                                     </div>
+
+                                    <div>
+                                        <label className="block text-white text-[14px] font-medium mb-[8px]">
+                                            Weekly Learning Goal (Hours)
+                                        </label>
+                                        <input
+                                            type="number"
+                                            name="weeklyGoalHours"
+                                            value={preferencesData.weeklyGoalHours}
+                                            onChange={handlePreferencesChange}
+                                            min="0"
+                                            max="168"
+                                            className="w-full bg-[#0d0d0d] border border-white/10 rounded-[8px] px-[16px] py-[12px] text-white focus:outline-none focus:border-[#e43b58] transition-colors"
+                                        />
+                                        <p className="text-[#888888] text-[12px] mt-[4px]">
+                                            Set your weekly learning time goal (0-168 hours)
+                                        </p>
+                                    </div>
                                 </div>
 
-                                <div className="flex justify-end mt-[24px]">
+                                <div className="flex justify-between items-center mt-[24px]">
+                                    <button
+                                        onClick={handleResetPreferences}
+                                        className="flex items-center gap-[8px] bg-[#383838] hover:bg-[#4a4a4a] text-white px-[20px] py-[12px] rounded-[8px] transition-colors"
+                                    >
+                                        Reset to Default
+                                    </button>
                                     <button
                                         onClick={handleSavePreferences}
                                         disabled={saving}

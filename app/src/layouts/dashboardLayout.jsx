@@ -16,7 +16,7 @@ export default function DashboardLayout() {
       {/* <SearchCard searchCardVisible={searchCardVisible} setSearchCardVisible={setSearchCardVisible} /> */}
       <Sidebar />
       <div className=" flex-1 min-w-0 pl-2 flex flex-col h-full">
-        <Navbar searchCardVisible={searchCardVisible} setSearchCardVisible={setSearchCardVisible} />
+        {/* <Navbar searchCardVisible={searchCardVisible} setSearchCardVisible={setSearchCardVisible} /> */}
         <div className="flex-1 min-w-0 text-white w-full overflow-auto">
           <div className="bg-[#151515] overflow-auto custom-scrollbar rounded-[12px] border border-b-0 border-white/10 h-full">
             <Outlet />

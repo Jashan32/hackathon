@@ -57,12 +57,6 @@ export default function StuSidebar() {
                         <div className={`${isSidebarClosed ? "text-[10px]" : "text-[14px]"} font-medium`}>Settings</div>
                     </div>
                 </div>
-                <div className=" h-[64px] py-[16px] ml-[11px]">
-                    <div className="w-[42px] h-[42px] hover:bg-[#383838] flex items-center justify-center rounded-full cursor-pointer">
-                        <img src={`${profilePicUrl}`} referrerPolicy="no-referrer" className="h-[32px] w-[32px] rounded-full cursor-pointer" />
-                    </div>
-
-                </div>
             </div>
         </div>
     );

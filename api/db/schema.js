@@ -38,6 +38,46 @@ const userSchema = new Schema({
         type: String,
         maxlength: 500
     },
+    learningPreferences: {
+        emailNotifications: {
+            courseUpdates: {
+                type: Boolean,
+                default: true
+            },
+            assignmentReminders: {
+                type: Boolean,
+                default: true
+            },
+            newCourses: {
+                type: Boolean,
+                default: false
+            },
+            promotions: {
+                type: Boolean,
+                default: false
+            }
+        },
+        learningGoals: {
+            type: String,
+            maxlength: 1000,
+            default: ''
+        },
+        preferredLanguage: {
+            type: String,
+            enum: ['english', 'spanish', 'french', 'german', 'chinese', 'japanese'],
+            default: 'english'
+        },
+        studyReminders: {
+            type: Boolean,
+            default: false
+        },
+        weeklyGoalHours: {
+            type: Number,
+            min: 0,
+            max: 168,
+            default: 5
+        }
+    },
     isActive: {
         type: Boolean,
         default: true

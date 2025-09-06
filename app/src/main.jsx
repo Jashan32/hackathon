@@ -19,10 +19,12 @@ import StuCourses from './stu/courses/courses.jsx'
 import StuSettings from './stu/settings/settings.jsx'
 import Enrolled from './stu/enrolled/enrolled.jsx'
 import ViewEnrolled from './stu/enrolled/viewEnrolled.jsx'
+import Auth from './auth.jsx'
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
     <Routes>
+      <Route path="/auth" element={<Auth />} />
       <Route path="/dashboard/edu" element={<DashboardLayout />}>
         <Route index element={<Navigate to="courses" replace />} />
         {/* <Route path="home" element={<Home />} /> */}

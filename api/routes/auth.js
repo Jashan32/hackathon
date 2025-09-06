@@ -60,15 +60,18 @@ router.post('/register', async (req, res) => {
         );
 
         res.status(201).json({
+            success: true,
             message: 'User created successfully',
-            token,
-            user: {
-                id: user._id,
-                firstName: user.firstName,
-                lastName: user.lastName,
-                email: user.email,
-                role: user.role,
-                profilePicture: user.profilePicture
+            data: {
+                token,
+                user: {
+                    id: user._id,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    email: user.email,
+                    role: user.role,
+                    profilePicture: user.profilePicture
+                }
             }
         });
     } catch (error) {
@@ -101,15 +104,18 @@ router.post('/login', async (req, res) => {
         );
 
         res.json({
+            success: true,
             message: 'Login successful',
-            token,
-            user: {
-                id: user._id,
-                firstName: user.firstName,
-                lastName: user.lastName,
-                email: user.email,
-                role: user.role,
-                profilePicture: user.profilePicture
+            data: {
+                token,
+                user: {
+                    id: user._id,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    email: user.email,
+                    role: user.role,
+                    profilePicture: user.profilePicture
+                }
             }
         });
     } catch (error) {
@@ -291,6 +297,152 @@ router.put('/change-password', authenticateToken, async (req, res) => {
     } catch (error) {
         console.error('Change password error:', error);
         res.status(500).json({ error: 'Failed to change password' });
+    }
+});
+
+// Get user learning preferences
+router.get('/learning-preferences', authenticateToken, async (req, res) => {
+    try {
+        const user = await User.findById(req.user.userId).select('learningPreferences');
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        res.json({
+            success: true,
+            preferences: user.learningPreferences || {
+                emailNotifications: {
+                    courseUpdates: true,
+                    assignmentReminders: true,
+                    newCourses: false,
+                    promotions: false
+                },
+                learningGoals: '',
+                preferredLanguage: 'english',
+                studyReminders: false,
+                weeklyGoalHours: 5
+            }
+        });
+    } catch (error) {
+        console.error('Get learning preferences error:', error);
+        res.status(500).json({ error: 'Failed to fetch learning preferences' });
+    }
+});
+
+// Update user learning preferences
+router.put('/learning-preferences', authenticateToken, async (req, res) => {
+    try {
+        const {
+            emailNotifications,
+            learningGoals,
+            preferredLanguage,
+            studyReminders,
+            weeklyGoalHours
+        } = req.body;
+
+        // Validate weeklyGoalHours if provided
+        if (weeklyGoalHours !== undefined && (weeklyGoalHours < 0 || weeklyGoalHours > 168)) {
+            return res.status(400).json({ error: 'Weekly goal hours must be between 0 and 168' });
+        }
+
+        // Validate preferredLanguage if provided
+        const validLanguages = ['english', 'spanish', 'french', 'german', 'chinese', 'japanese'];
+        if (preferredLanguage && !validLanguages.includes(preferredLanguage)) {
+            return res.status(400).json({ error: 'Invalid preferred language' });
+        }
+
+        // Validate learningGoals length
+        if (learningGoals && learningGoals.length > 1000) {
+            return res.status(400).json({ error: 'Learning goals must be less than 1000 characters' });
+        }
+
+        // Prepare update object
+        const updateData = {
+            updatedAt: new Date()
+        };
+
+        // Build the learningPreferences object
+        const user = await User.findById(req.user.userId);
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        const currentPreferences = user.learningPreferences || {};
+        
+        updateData.learningPreferences = {
+            emailNotifications: {
+                courseUpdates: emailNotifications?.courseUpdates !== undefined ? emailNotifications.courseUpdates : currentPreferences.emailNotifications?.courseUpdates ?? true,
+                assignmentReminders: emailNotifications?.assignmentReminders !== undefined ? emailNotifications.assignmentReminders : currentPreferences.emailNotifications?.assignmentReminders ?? true,
+                newCourses: emailNotifications?.newCourses !== undefined ? emailNotifications.newCourses : currentPreferences.emailNotifications?.newCourses ?? false,
+                promotions: emailNotifications?.promotions !== undefined ? emailNotifications.promotions : currentPreferences.emailNotifications?.promotions ?? false
+            },
+            learningGoals: learningGoals !== undefined ? learningGoals : currentPreferences.learningGoals || '',
+            preferredLanguage: preferredLanguage || currentPreferences.preferredLanguage || 'english',
+            studyReminders: studyReminders !== undefined ? studyReminders : currentPreferences.studyReminders ?? false,
+            weeklyGoalHours: weeklyGoalHours !== undefined ? weeklyGoalHours : currentPreferences.weeklyGoalHours ?? 5
+        };
+
+        const updatedUser = await User.findByIdAndUpdate(
+            req.user.userId,
+            updateData,
+            { new: true, runValidators: true }
+        ).select('-password');
+
+        if (!updatedUser) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        res.json({
+            success: true,
+            message: 'Learning preferences updated successfully',
+            preferences: updatedUser.learningPreferences
+        });
+    } catch (error) {
+        console.error('Update learning preferences error:', error);
+        if (error.name === 'ValidationError') {
+            return res.status(400).json({ error: error.message });
+        }
+        res.status(500).json({ error: 'Failed to update learning preferences' });
+    }
+});
+
+// Reset learning preferences to default
+router.post('/learning-preferences/reset', authenticateToken, async (req, res) => {
+    try {
+        const defaultPreferences = {
+            emailNotifications: {
+                courseUpdates: true,
+                assignmentReminders: true,
+                newCourses: false,
+                promotions: false
+            },
+            learningGoals: '',
+            preferredLanguage: 'english',
+            studyReminders: false,
+            weeklyGoalHours: 5
+        };
+
+        const updatedUser = await User.findByIdAndUpdate(
+            req.user.userId,
+            { 
+                learningPreferences: defaultPreferences,
+                updatedAt: new Date()
+            },
+            { new: true, runValidators: true }
+        ).select('-password');
+
+        if (!updatedUser) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        res.json({
+            success: true,
+            message: 'Learning preferences reset to default',
+            preferences: updatedUser.learningPreferences
+        });
+    } catch (error) {
+        console.error('Reset learning preferences error:', error);
+        res.status(500).json({ error: 'Failed to reset learning preferences' });
     }
 });
 
