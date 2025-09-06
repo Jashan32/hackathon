@@ -12,6 +12,7 @@ import mentorshipRoutes from './routes/mentorship.js';
 import progressRoutes from './routes/progress.js';
 import assignmentRoutes from './routes/assignments.js';
 import taRoutes from './routes/tas.js';
+import uploadRoutes from './routes/upload.js';
 
 dotenv.config();
 
@@ -33,6 +34,7 @@ app.use('/api/mentorship', mentorshipRoutes);
 app.use('/api/progress', progressRoutes);
 app.use('/api/assignments', assignmentRoutes);
 app.use('/api/tas', taRoutes);
+app.use('/api/upload', uploadRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

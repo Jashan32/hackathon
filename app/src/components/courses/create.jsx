@@ -13,6 +13,7 @@ export default function CreateCourse() {
         thumbnail: ''
     });
     const [loading, setLoading] = useState(false);
+    const [uploadingImage, setUploadingImage] = useState(false);
     const [errors, setErrors] = useState({});
 
     const categories = [
@@ -38,19 +39,68 @@ export default function CreateCourse() {
         }
     };
 
-    const handleImageUpload = (e) => {
+    const handleImageUpload = async (e) => {
         const file = e.target.files[0];
-        if (file) {
-            // In a real app, you'd upload to a cloud service like Cloudinary/AWS S3
-            // For now, we'll use a data URL
-            const reader = new FileReader();
-            reader.onload = (e) => {
+        if (!file) return;
+
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+            setErrors(prev => ({
+                ...prev,
+                thumbnail: 'Please select a valid image file'
+            }));
+            return;
+        }
+
+        // Validate file size (5MB limit)
+        if (file.size > 5 * 1024 * 1024) {
+            setErrors(prev => ({
+                ...prev,
+                thumbnail: 'Image size must be less than 5MB'
+            }));
+            return;
+        }
+
+        setUploadingImage(true);
+        
+        try {
+            const formData = new FormData();
+            formData.append('image', file);
+
+            const response = await fetch('http://localhost:3000/api/upload/image', {
+                method: 'POST',
+                headers: {
+                    'authorization': localStorage.getItem('token')
+                },
+                body: formData
+            });
+
+            if (response.ok) {
+                const data = await response.json();
                 setFormData(prev => ({
                     ...prev,
-                    thumbnail: e.target.result
+                    thumbnail: `http://localhost:3000${data.url}`
                 }));
-            };
-            reader.readAsDataURL(file);
+                // Clear any previous errors
+                setErrors(prev => ({
+                    ...prev,
+                    thumbnail: ''
+                }));
+            } else {
+                const errorData = await response.json();
+                setErrors(prev => ({
+                    ...prev,
+                    thumbnail: errorData.error || 'Failed to upload image'
+                }));
+            }
+        } catch (error) {
+            console.error('Image upload error:', error);
+            setErrors(prev => ({
+                ...prev,
+                thumbnail: 'Network error. Please try again.'
+            }));
+        } finally {
+            setUploadingImage(false);
         }
     };
 
@@ -286,15 +336,25 @@ export default function CreateCourse() {
                         <h2 className="text-white text-[20px] font-semibold mb-[24px]">Course Thumbnail</h2>
                         
                         <div className="border-2 border-dashed border-white/20 rounded-[12px] p-[32px] text-center">
-                            {formData.thumbnail ? (
+                            {uploadingImage ? (
+                                <div className="space-y-[16px]">
+                                    <div className="w-[80px] h-[80px] bg-[#383838] rounded-full flex items-center justify-center mx-auto">
+                                        <div className="w-[40px] h-[40px] border-4 border-white/20 border-t-[#e43b58] rounded-full animate-spin"></div>
+                                    </div>
+                                    <div>
+                                        <h3 className="text-white text-[16px] font-medium mb-[4px]">Uploading Image...</h3>
+                                        <p className="text-[#888888] text-[14px]">Please wait while we upload your thumbnail</p>
+                                    </div>
+                                </div>
+                            ) : formData.thumbnail ? (
                                 <div className="space-y-[16px]">
                                     <img 
                                         src={formData.thumbnail} 
                                         alt="Course thumbnail preview" 
-                                        className="w-[200px] h-[120px] object-cover rounded-[8px] mx-auto"
+                                        className="w-[200px] h-[120px] object-cover rounded-[8px] mx-auto border border-white/10"
                                     />
                                     <div className="space-y-[8px]">
-                                        <p className="text-white text-[14px]">Thumbnail uploaded successfully</p>
+                                        <p className="text-green-400 text-[14px]">✓ Thumbnail uploaded successfully</p>
                                         <button
                                             type="button"
                                             onClick={() => setFormData(prev => ({ ...prev, thumbnail: '' }))}
@@ -312,22 +372,28 @@ export default function CreateCourse() {
                                     <div>
                                         <h3 className="text-white text-[16px] font-medium mb-[4px]">Upload Course Thumbnail</h3>
                                         <p className="text-[#888888] text-[14px] mb-[16px]">
-                                            Recommended: 1280x720 pixels (16:9 aspect ratio)
+                                            Recommended: 1280x720 pixels (16:9 aspect ratio), Max 5MB
                                         </p>
                                     </div>
                                 </div>
                             )}
                             
-                            <label className="inline-flex items-center gap-[8px] bg-[#383838] hover:bg-[#4a4a4a] text-white px-[20px] py-[12px] rounded-[8px] cursor-pointer transition-colors">
-                                <Upload className="size-[16px]" />
-                                {formData.thumbnail ? 'Change Thumbnail' : 'Upload Thumbnail'}
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handleImageUpload}
-                                    className="hidden"
-                                />
-                            </label>
+                            {!uploadingImage && (
+                                <label className="inline-flex items-center gap-[8px] bg-[#383838] hover:bg-[#4a4a4a] text-white px-[20px] py-[12px] rounded-[8px] cursor-pointer transition-colors">
+                                    <Upload className="size-[16px]" />
+                                    {formData.thumbnail ? 'Change Thumbnail' : 'Upload Thumbnail'}
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleImageUpload}
+                                        className="hidden"
+                                    />
+                                </label>
+                            )}
+                            
+                            {errors.thumbnail && (
+                                <p className="text-red-400 text-[12px] mt-[8px]">{errors.thumbnail}</p>
+                            )}
                         </div>
                     </div>
 

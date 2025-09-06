@@ -18,7 +18,7 @@ export default function Courses(){
                     method: "GET",
                 });
                 const data = await res.json();
-                console.log(data);
+                console.log("data", data);
                 setCourses(data.courses);
             } catch (error) {
                 console.error("Error fetching courses:", error);

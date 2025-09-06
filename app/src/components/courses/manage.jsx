@@ -857,6 +857,7 @@ function SettingsTab({ course, onUpdate }) {
         thumbnail: course.thumbnail || ''
     });
     const [saving, setSaving] = useState(false);
+    const [uploadingImage, setUploadingImage] = useState(false);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -864,6 +865,54 @@ function SettingsTab({ course, onUpdate }) {
             ...prev,
             [name]: value
         }));
+    };
+
+    const handleImageUpload = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+            alert('Please select a valid image file');
+            return;
+        }
+
+        // Validate file size (5MB limit)
+        if (file.size > 5 * 1024 * 1024) {
+            alert('Image size must be less than 5MB');
+            return;
+        }
+
+        setUploadingImage(true);
+        
+        try {
+            const uploadFormData = new FormData();
+            uploadFormData.append('image', file);
+
+            const response = await fetch('http://localhost:3000/api/upload/image', {
+                method: 'POST',
+                headers: {
+                    'authorization': localStorage.getItem('token')
+                },
+                body: uploadFormData
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setFormData(prev => ({
+                    ...prev,
+                    thumbnail: `http://localhost:3000${data.url}`
+                }));
+            } else {
+                const errorData = await response.json();
+                alert(errorData.error || 'Failed to upload image');
+            }
+        } catch (error) {
+            console.error('Image upload error:', error);
+            alert('Network error. Please try again.');
+        } finally {
+            setUploadingImage(false);
+        }
     };
 
     const handleSave = async () => {
@@ -944,6 +993,62 @@ function SettingsTab({ course, onUpdate }) {
                     rows="4"
                     className="w-full bg-[#0d0d0d] border border-white/10 rounded-[8px] px-[16px] py-[12px] text-white focus:border-[#e43b58] focus:outline-none transition-colors resize-none"
                 />
+            </div>
+
+            {/* Thumbnail Upload Section */}
+            <div className="bg-[#1d1d1d] border border-white/10 rounded-[12px] p-[24px]">
+                <label className="block text-white text-[14px] font-medium mb-[16px]">Course Thumbnail</label>
+                
+                <div className="border-2 border-dashed border-white/20 rounded-[12px] p-[24px] text-center">
+                    {uploadingImage ? (
+                        <div className="space-y-[16px]">
+                            <div className="w-[60px] h-[60px] bg-[#383838] rounded-full flex items-center justify-center mx-auto">
+                                <div className="w-[30px] h-[30px] border-4 border-white/20 border-t-[#e43b58] rounded-full animate-spin"></div>
+                            </div>
+                            <p className="text-white text-[14px]">Uploading thumbnail...</p>
+                        </div>
+                    ) : formData.thumbnail ? (
+                        <div className="space-y-[16px]">
+                            <img 
+                                src={formData.thumbnail} 
+                                alt="Course thumbnail preview" 
+                                className="w-[160px] h-[90px] object-cover rounded-[8px] mx-auto border border-white/10"
+                            />
+                            <div className="space-y-[8px]">
+                                <p className="text-green-400 text-[14px]">✓ Thumbnail updated</p>
+                                <button
+                                    type="button"
+                                    onClick={() => setFormData(prev => ({ ...prev, thumbnail: '' }))}
+                                    className="text-red-400 hover:text-red-300 text-[12px] transition-colors"
+                                >
+                                    Remove Thumbnail
+                                </button>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="space-y-[16px]">
+                            <div className="w-[60px] h-[60px] bg-[#383838] rounded-full flex items-center justify-center mx-auto">
+                                <Upload className="size-[30px] text-[#888888]" />
+                            </div>
+                            <p className="text-[#888888] text-[14px]">
+                                Upload a new thumbnail (Recommended: 1280x720px, Max 5MB)
+                            </p>
+                        </div>
+                    )}
+                    
+                    {!uploadingImage && (
+                        <label className="inline-flex items-center gap-[8px] bg-[#383838] hover:bg-[#4a4a4a] text-white px-[16px] py-[8px] rounded-[8px] cursor-pointer transition-colors">
+                            <Upload className="size-[14px]" />
+                            {formData.thumbnail ? 'Change Thumbnail' : 'Upload Thumbnail'}
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImageUpload}
+                                className="hidden"
+                            />
+                        </label>
+                    )}
+                </div>
             </div>
 
             <div className="bg-[#1d1d1d] border border-white/10 rounded-[12px] p-[24px]">
