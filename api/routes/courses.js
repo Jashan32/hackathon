@@ -1,6 +1,6 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
-import { Course, User, Lecture, Document, StudentProgress } from '../db/schema.js';
+import { Course, User, Lecture, Document, StudentProgress, IndustryRating } from '../db/schema.js';
 
 const router = express.Router();
 
@@ -518,6 +518,151 @@ router.post('/:courseId/curriculum/sections/:sectionId/lectures', authenticateTo
         await course.save();
 
         res.json({ message: 'Lecture added successfully', lecture: newLecture });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Industry Expert Rating Routes
+
+// Get or create industry rating for a course
+router.get('/:courseId/industry-rating', authenticateToken, async (req, res) => {
+    try {
+        if (req.user.role !== 'industry_expert') {
+            return res.status(403).json({ error: 'Only industry experts can access ratings' });
+        }
+
+        const { courseId } = req.params;
+        const expertId = req.user.userId;
+
+        const rating = await IndustryRating.findOne({ courseId, expertId });
+
+        if (rating) {
+            res.json({ rating: rating.ratings, feedback: rating.feedback });
+        } else {
+            res.json({ rating: null });
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Create or update industry rating for a course
+router.post('/:courseId/industry-rating', authenticateToken, async (req, res) => {
+    try {
+        if (req.user.role !== 'industry_expert') {
+            return res.status(403).json({ error: 'Only industry experts can rate courses' });
+        }
+
+        const { courseId } = req.params;
+        const expertId = req.user.userId;
+        const { relevance, practicality, industryAlignment, skillDevelopment, overallQuality, feedback } = req.body;
+
+        // Check if course exists
+        const course = await Course.findById(courseId);
+        if (!course) {
+            return res.status(404).json({ error: 'Course not found' });
+        }
+
+        // Check if rating already exists
+        let rating = await IndustryRating.findOne({ courseId, expertId });
+
+        if (rating) {
+            // Update existing rating
+            rating.ratings = {
+                relevance,
+                practicality,
+                industryAlignment,
+                skillDevelopment,
+                overallQuality
+            };
+            rating.feedback = feedback || '';
+            rating.updatedAt = new Date();
+            await rating.save();
+        } else {
+            // Create new rating
+            rating = new IndustryRating({
+                courseId,
+                expertId,
+                ratings: {
+                    relevance,
+                    practicality,
+                    industryAlignment,
+                    skillDevelopment,
+                    overallQuality
+                },
+                feedback: feedback || ''
+            });
+            await rating.save();
+        }
+
+        res.json({ 
+            message: 'Rating saved successfully', 
+            rating: rating.ratings,
+            feedback: rating.feedback 
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Get all industry ratings for a course (for students to view)
+router.get('/:courseId/industry-ratings', async (req, res) => {
+    try {
+        const { courseId } = req.params;
+
+        const ratings = await IndustryRating.find({ courseId })
+            .populate('expertId', 'firstName lastName expertise company experience')
+            .select('ratings feedback createdAt expertId');
+
+        if (ratings.length === 0) {
+            return res.json({ ratings: [], averages: null });
+        }
+
+        // Calculate averages
+        const totals = ratings.reduce((acc, rating) => {
+            acc.relevance += rating.ratings.relevance;
+            acc.practicality += rating.ratings.practicality;
+            acc.industryAlignment += rating.ratings.industryAlignment;
+            acc.skillDevelopment += rating.ratings.skillDevelopment;
+            acc.overallQuality += rating.ratings.overallQuality;
+            return acc;
+        }, {
+            relevance: 0,
+            practicality: 0,
+            industryAlignment: 0,
+            skillDevelopment: 0,
+            overallQuality: 0
+        });
+
+        const averages = {
+            relevance: (totals.relevance / ratings.length).toFixed(1),
+            practicality: (totals.practicality / ratings.length).toFixed(1),
+            industryAlignment: (totals.industryAlignment / ratings.length).toFixed(1),
+            skillDevelopment: (totals.skillDevelopment / ratings.length).toFixed(1),
+            overallQuality: (totals.overallQuality / ratings.length).toFixed(1),
+            totalRatings: ratings.length
+        };
+
+        res.json({ ratings, averages });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Get all courses with industry ratings for an expert
+router.get('/industry-ratings', authenticateToken, async (req, res) => {
+    try {
+        if (req.user.role !== 'industry_expert') {
+            return res.status(403).json({ error: 'Only industry experts can access this endpoint' });
+        }
+
+        const expertId = req.user.userId;
+        const ratings = await IndustryRating.find({ expertId })
+            .populate('courseId', 'title description category difficulty')
+            .select('courseId ratings feedback createdAt updatedAt');
+
+        res.json({ ratings });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

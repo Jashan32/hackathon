@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
     BookOpen, 
     Users, 
@@ -20,6 +21,7 @@ import {
 } from 'lucide-react';
 
 export default function StuCourses() {
+    const navigate = useNavigate();
     const [courses, setCourses] = useState([]);
     const [filteredCourses, setFilteredCourses] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -131,6 +133,10 @@ export default function StuCourses() {
         } catch (error) {
             console.error('Enrollment error:', error);
         }
+    };
+
+    const handleViewCourse = (courseId) => {
+        navigate(`/dashboard/stu/courses/view/${courseId}`);
     };
 
     const isEnrolled = (courseId) => enrolledCourses.includes(courseId);
@@ -283,6 +289,7 @@ export default function StuCourses() {
                             viewMode={viewMode}
                             isEnrolled={isEnrolled(course._id)}
                             onEnroll={() => handleEnroll(course._id)}
+                            onViewCourse={() => handleViewCourse(course._id)}
                             getDifficultyColor={getDifficultyColor}
                         />
                     ))}
@@ -315,7 +322,7 @@ export default function StuCourses() {
     );
 }
 
-function CourseCard({ course, viewMode, isEnrolled, onEnroll, getDifficultyColor }) {
+function CourseCard({ course, viewMode, isEnrolled, onEnroll, onViewCourse, getDifficultyColor }) {
     const [liked, setLiked] = useState(false);
 
     if (viewMode === 'list') {
@@ -386,6 +393,12 @@ function CourseCard({ course, viewMode, isEnrolled, onEnroll, getDifficultyColor
                                 <div className="text-right">
                                     <p className="text-white text-[18px] font-semibold">${course.price}</p>
                                 </div>
+                                <button
+                                    onClick={onViewCourse}
+                                    className="px-[16px] py-[8px] rounded-[6px] text-[14px] font-medium bg-[#7848ff] hover:bg-[#593cbc] text-white transition-colors"
+                                >
+                                    View Course
+                                </button>
                                 <button
                                     onClick={onEnroll}
                                     disabled={isEnrolled}
@@ -462,31 +475,39 @@ function CourseCard({ course, viewMode, isEnrolled, onEnroll, getDifficultyColor
                     </div>
                 </div>
 
-                <div className="flex items-center justify-between">
-                    <div className="text-white text-[20px] font-semibold">
-                        ${course.price}
-                    </div>
+                <div className="flex flex-col gap-[8px]">
                     <button
-                        onClick={onEnroll}
-                        disabled={isEnrolled}
-                        className={`flex items-center gap-[6px] px-[16px] py-[8px] rounded-[8px] text-[14px] font-medium transition-colors ${
-                            isEnrolled
-                                ? 'bg-green-500/20 text-green-400 cursor-not-allowed'
-                                : 'bg-[#e43b58] hover:bg-[#c73650] text-white'
-                        }`}
+                        onClick={onViewCourse}
+                        className="w-full px-[16px] py-[8px] rounded-[8px] text-[14px] font-medium bg-[#7848ff] hover:bg-[#593cbc] text-white transition-colors"
                     >
-                        {isEnrolled ? (
-                            <>
-                                <Award className="size-[16px]" />
-                                Enrolled
-                            </>
-                        ) : (
-                            <>
-                                <Plus className="size-[16px]" />
-                                Enroll
-                            </>
-                        )}
+                        View Course
                     </button>
+                    <div className="flex items-center justify-between">
+                        <div className="text-white text-[20px] font-semibold">
+                            ${course.price}
+                        </div>
+                        <button
+                            onClick={onEnroll}
+                            disabled={isEnrolled}
+                            className={`flex items-center gap-[6px] px-[16px] py-[8px] rounded-[8px] text-[14px] font-medium transition-colors ${
+                                isEnrolled
+                                    ? 'bg-green-500/20 text-green-400 cursor-not-allowed'
+                                    : 'bg-[#e43b58] hover:bg-[#c73650] text-white'
+                            }`}
+                        >
+                            {isEnrolled ? (
+                                <>
+                                    <Award className="size-[16px]" />
+                                    Enrolled
+                                </>
+                            ) : (
+                                <>
+                                    <Plus className="size-[16px]" />
+                                    Enroll
+                                </>
+                            )}
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

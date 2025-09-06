@@ -25,8 +25,10 @@ import {
     Target,
     TrendingUp,
     Plus,
-    Bookmark
+    Bookmark,
+    Briefcase
 } from 'lucide-react';
+import IndustryRatings from '../../components/IndustryRatings';
 
 export default function ViewCourse() {
     const { courseId } = useParams();
@@ -44,6 +46,7 @@ export default function ViewCourse() {
         { id: 'overview', name: 'Overview', icon: BookOpen },
         { id: 'curriculum', name: 'Curriculum', icon: Video },
         { id: 'reviews', name: 'Reviews', icon: MessageSquare },
+        { id: 'industry', name: 'Industry Ratings', icon: Briefcase },
         { id: 'instructor', name: 'Instructor', icon: User }
     ];
 
@@ -513,6 +516,10 @@ export default function ViewCourse() {
                                 ))}
                             </div>
                         </div>
+                    )}
+
+                    {activeTab === 'industry' && (
+                        <IndustryRatings courseId={courseId} />
                     )}
 
                     {activeTab === 'instructor' && (

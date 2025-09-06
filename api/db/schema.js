@@ -589,6 +589,69 @@ const assignmentSchema = new Schema({
     }
 });
 
+// Industry Rating Schema
+const industryRatingSchema = new Schema({
+    courseId: {
+        type: Schema.Types.ObjectId,
+        ref: 'Course',
+        required: true
+    },
+    expertId: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    ratings: {
+        relevance: {
+            type: Number,
+            min: 1,
+            max: 5,
+            required: true
+        },
+        practicality: {
+            type: Number,
+            min: 1,
+            max: 5,
+            required: true
+        },
+        industryAlignment: {
+            type: Number,
+            min: 1,
+            max: 5,
+            required: true
+        },
+        skillDevelopment: {
+            type: Number,
+            min: 1,
+            max: 5,
+            required: true
+        },
+        overallQuality: {
+            type: Number,
+            min: 1,
+            max: 5,
+            required: true
+        }
+    },
+    feedback: {
+        type: String,
+        maxlength: 2000,
+        default: ''
+    },
+    isActive: {
+        type: Boolean,
+        default: true
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
+    updatedAt: {
+        type: Date,
+        default: Date.now
+    }
+});
+
 // Create Models
 const User = mongoose.model('User', userSchema);
 const Course = mongoose.model('Course', courseSchema);
@@ -597,6 +660,7 @@ const Document = mongoose.model('Document', documentSchema);
 const MentorshipSession = mongoose.model('MentorshipSession', mentorshipSessionSchema);
 const StudentProgress = mongoose.model('StudentProgress', studentProgressSchema);
 const Assignment = mongoose.model('Assignment', assignmentSchema);
+const IndustryRating = mongoose.model('IndustryRating', industryRatingSchema);
 
 export {
     User,
@@ -605,5 +669,6 @@ export {
     Document,
     MentorshipSession,
     StudentProgress,
-    Assignment
+    Assignment,
+    IndustryRating
 };

@@ -41,7 +41,7 @@ export default function Auth() {
                 if (data.data.user.role === 'educator') {
                     navigate('/dashboard');
                 } else if (data.data.user.role === 'industry_expert') {
-                    navigate('/dashboard');
+                    navigate('/dashboard/ind');
                 } else {
                     navigate('/dashboard/stu');
                 }
@@ -87,7 +87,7 @@ export default function Auth() {
                 if (data.data.user.role === 'educator') {
                     navigate('/dashboard/edu');
                 } else if (data.data.user.role === 'industry_expert') {
-                    navigate('/dashboard/edu');
+                    navigate('/dashboard/ind');
                 } else {
                     navigate('/dashboard/stu');
                 }
