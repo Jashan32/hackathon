@@ -24,11 +24,11 @@ const authenticateToken = (req, res, next) => {
     }
 };
 
-// Create course (educators only)
+// Create course (educators and industry experts only)
 router.post('/', authenticateToken, async (req, res) => {
     try {
-        if (req.user.role !== 'educator') {
-            return res.status(403).json({ error: 'Only educators can create courses' });
+        if (req.user.role !== 'educator' && req.user.role !== 'industry_expert') {
+            return res.status(403).json({ error: 'Only educators and industry experts can create courses' });
         }
 
         const { title, description, category, difficulty, price, thumbnail } = req.body;

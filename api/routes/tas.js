@@ -7,8 +7,8 @@ const router = express.Router();
 // Get all TAs for an educator
 router.get('/educator', authenticateToken, async (req, res) => {
     try {
-        if (req.user.role !== 'educator') {
-            return res.status(403).json({ error: 'Only educators can view TAs' });
+        if (req.user.role !== 'educator' && req.user.role !== 'industry_expert') {
+            return res.status(403).json({ error: 'Only educators and industry experts can view TAs' });
         }
 
         // Find all courses by this educator
@@ -53,8 +53,8 @@ router.get('/educator', authenticateToken, async (req, res) => {
 // Assign a TA to a course
 router.post('/assign', authenticateToken, async (req, res) => {
     try {
-        if (req.user.role !== 'educator') {
-            return res.status(403).json({ error: 'Only educators can assign TAs' });
+        if (req.user.role !== 'educator' && req.user.role !== 'industry_expert') {
+            return res.status(403).json({ error: 'Only educators and industry experts can assign TAs' });
         }
 
         const { taEmail, courseId, assignedStudents = [] } = req.body;
@@ -137,8 +137,8 @@ router.post('/assign', authenticateToken, async (req, res) => {
 // Remove TA from course
 router.delete('/:taId/course/:courseId', authenticateToken, async (req, res) => {
     try {
-        if (req.user.role !== 'educator') {
-            return res.status(403).json({ error: 'Only educators can remove TAs' });
+        if (req.user.role !== 'educator' && req.user.role !== 'industry_expert') {
+            return res.status(403).json({ error: 'Only educators and industry experts can remove TAs' });
         }
 
         const { taId, courseId } = req.params;
@@ -165,8 +165,8 @@ router.delete('/:taId/course/:courseId', authenticateToken, async (req, res) => 
 // Update TA assignment (change assigned students)
 router.put('/:taId/course/:courseId', authenticateToken, async (req, res) => {
     try {
-        if (req.user.role !== 'educator') {
-            return res.status(403).json({ error: 'Only educators can update TA assignments' });
+        if (req.user.role !== 'educator' && req.user.role !== 'industry_expert') {
+            return res.status(403).json({ error: 'Only educators and industry experts can update TA assignments' });
         }
 
         const { taId, courseId } = req.params;
@@ -230,8 +230,8 @@ router.get('/course/:courseId/available-students', authenticateToken, async (req
 // Get available students for TA assignment
 router.get('/students/:courseId', authenticateToken, async (req, res) => {
     try {
-        if (req.user.role !== 'educator') {
-            return res.status(403).json({ error: 'Only educators can view students' });
+        if (req.user.role !== 'educator' && req.user.role !== 'industry_expert') {
+            return res.status(403).json({ error: 'Only educators and industry experts can view students' });
         }
 
         const { courseId } = req.params;

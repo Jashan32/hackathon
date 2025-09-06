@@ -1,4 +1,4 @@
-import { Mail, User, GraduationCap } from "lucide-react";
+import { Mail, User, GraduationCap, Briefcase } from "lucide-react";
 import signUpSideImage from "./assets/signUpSideImage.png";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -11,7 +11,7 @@ export default function Auth() {
     const [password, setPassword] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
-    const [selectedRole, setSelectedRole] = useState('student'); // 'student' or 'educator'
+    const [selectedRole, setSelectedRole] = useState('student'); // 'student', 'educator', or 'industry_expert'
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const navigate = useNavigate();
@@ -30,14 +30,17 @@ export default function Auth() {
                 body: JSON.stringify({ email, password, role: selectedRole })
             });
             const data = await res.json();
-            
+
             if (data.success) {
                 localStorage.setItem('token', data.data.token);
-                localStorage.setItem('user', JSON.stringify(data.data.user));
+                localStorage.setItem('authorization', data.data.token);
+                localStorage.setItem('userId', JSON.stringify(data.data.user.id));
                 localStorage.setItem('isLoggedIn', 'true');
-                
+
                 // Navigate based on role
                 if (data.data.user.role === 'educator') {
+                    navigate('/dashboard');
+                } else if (data.data.user.role === 'industry_expert') {
                     navigate('/dashboard');
                 } else {
                     navigate('/dashboard/stu');
@@ -64,24 +67,27 @@ export default function Auth() {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ 
-                    firstName, 
-                    lastName, 
-                    email, 
-                    password, 
-                    role: selectedRole 
+                body: JSON.stringify({
+                    firstName,
+                    lastName,
+                    email,
+                    password,
+                    role: selectedRole
                 })
             });
             const data = await res.json();
-            
+
             if (data.success) {
                 localStorage.setItem('token', data.data.token);
-                localStorage.setItem('user', JSON.stringify(data.data.user));
+                localStorage.setItem('authorization', data.data.token);
+                localStorage.setItem('userId', JSON.stringify(data.data.user.id));
                 localStorage.setItem('isLoggedIn', 'true');
-                
+
                 // Navigate based on role
                 if (data.data.user.role === 'educator') {
-                    navigate('/dashboard');
+                    navigate('/dashboard/edu');
+                } else if (data.data.user.role === 'industry_expert') {
+                    navigate('/dashboard/edu');
                 } else {
                     navigate('/dashboard/stu');
                 }
@@ -109,19 +115,18 @@ export default function Auth() {
                             }`}>
                             <div className="text-[24px] mb-[16px] font-bold text-white">Create your account</div>
                             <div className="text-[14px] mb-[20px] font-medium text-[#888888]">Sign up to join</div>
-                            
+
                             {/* Role Selection */}
                             <div className="mb-[20px] w-[308px]">
                                 <div className="text-[14px] text-white mb-[8px]">I am a:</div>
-                                <div className="flex gap-[8px]">
+                                <div className="grid grid-cols-2 gap-[8px]">
                                     <button
                                         type="button"
                                         onClick={() => setSelectedRole('student')}
-                                        className={`flex-1 h-[44px] flex items-center justify-center gap-[8px] rounded-[10px] border-[1px] ${
-                                            selectedRole === 'student' 
-                                                ? 'bg-[#7848ff] border-[#7848ff] text-white' 
+                                        className={`h-[44px] flex items-center justify-center gap-[8px] rounded-[10px] border-[1px] ${selectedRole === 'student'
+                                                ? 'bg-[#7848ff] border-[#7848ff] text-white'
                                                 : 'bg-[#222222] border-white/10 text-[#888888] hover:bg-[#383838]'
-                                        }`}
+                                            }`}
                                     >
                                         <User className="size-[16px]" />
                                         <span className="text-[14px] font-medium">Student</span>
@@ -129,59 +134,69 @@ export default function Auth() {
                                     <button
                                         type="button"
                                         onClick={() => setSelectedRole('educator')}
-                                        className={`flex-1 h-[44px] flex items-center justify-center gap-[8px] rounded-[10px] border-[1px] ${
-                                            selectedRole === 'educator' 
-                                                ? 'bg-[#7848ff] border-[#7848ff] text-white' 
+                                        className={`h-[44px] flex items-center justify-center gap-[8px] rounded-[10px] border-[1px] ${selectedRole === 'educator'
+                                                ? 'bg-[#7848ff] border-[#7848ff] text-white'
                                                 : 'bg-[#222222] border-white/10 text-[#888888] hover:bg-[#383838]'
-                                        }`}
+                                            }`}
                                     >
                                         <GraduationCap className="size-[16px]" />
                                         <span className="text-[14px] font-medium">Educator</span>
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setSelectedRole('industry_expert')}
+                                        className={`col-span-2 h-[44px] flex items-center justify-center gap-[8px] rounded-[10px] border-[1px] ${selectedRole === 'industry_expert'
+                                                ? 'bg-[#7848ff] border-[#7848ff] text-white'
+                                                : 'bg-[#222222] border-white/10 text-[#888888] hover:bg-[#383838]'
+                                            }`}
+                                    >
+                                        <Briefcase className="size-[16px]" />
+                                        <span className="text-[14px] font-medium">Industry Expert</span>
                                     </button>
                                 </div>
                             </div>
 
                             <form onSubmit={handleEmailSignup} className="flex flex-col gap-[8px]">
                                 <div className="flex gap-[8px]">
-                                    <input 
+                                    <input
                                         type="text"
                                         value={firstName}
                                         onChange={(e) => setFirstName(e.target.value)}
-                                        className="text-white focus:outline-[1px] focus:outline-[#bb86fc]/80 h-[39px] w-[146px] py-[8px] px-[12px] bg-[#2b2b2b] rounded-[8px] caret-white placeholder:text-white/50 text-[14px]" 
+                                        className="text-white focus:outline-[1px] focus:outline-[#bb86fc]/80 h-[39px] w-[146px] py-[8px] px-[12px] bg-[#2b2b2b] rounded-[8px] caret-white placeholder:text-white/50 text-[14px]"
                                         placeholder="First Name"
-                                        required 
+                                        required
                                     />
-                                    <input 
+                                    <input
                                         type="text"
                                         value={lastName}
                                         onChange={(e) => setLastName(e.target.value)}
-                                        className="text-white focus:outline-[1px] focus:outline-[#bb86fc]/80 h-[39px] w-[146px] py-[8px] px-[12px] bg-[#2b2b2b] rounded-[8px] caret-white placeholder:text-white/50 text-[14px]" 
+                                        className="text-white focus:outline-[1px] focus:outline-[#bb86fc]/80 h-[39px] w-[146px] py-[8px] px-[12px] bg-[#2b2b2b] rounded-[8px] caret-white placeholder:text-white/50 text-[14px]"
                                         placeholder="Last Name"
-                                        required 
+                                        required
                                     />
                                 </div>
-                                <input 
+                                <input
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    className="text-white focus:outline-[1px] focus:outline-[#bb86fc]/80 h-[39px] w-[300px] py-[8px] px-[12px] bg-[#2b2b2b] rounded-[8px] caret-white placeholder:text-white/50 text-[14px]" 
+                                    className="text-white focus:outline-[1px] focus:outline-[#bb86fc]/80 h-[39px] w-[300px] py-[8px] px-[12px] bg-[#2b2b2b] rounded-[8px] caret-white placeholder:text-white/50 text-[14px]"
                                     placeholder="Email"
-                                    required 
+                                    required
                                 />
-                                <input 
+                                <input
                                     type="password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="text-white focus:outline-1 focus:outline-[#bb86fc]/80 h-[39px] w-[300px] py-[8px] px-[12px] bg-[#2b2b2b] rounded-[8px] caret-white placeholder:text-white/50 text-[14px]" 
+                                    className="text-white focus:outline-1 focus:outline-[#bb86fc]/80 h-[39px] w-[300px] py-[8px] px-[12px] bg-[#2b2b2b] rounded-[8px] caret-white placeholder:text-white/50 text-[14px]"
                                     placeholder="Password"
-                                    required 
+                                    required
                                 />
                                 {error && (
                                     <div className="text-red-500 text-[12px] text-center">
                                         {error}
                                     </div>
                                 )}
-                                <button 
+                                <button
                                     type="submit"
                                     disabled={loading}
                                     className="bg-[#7848ff] w-[300px] h-[40px] flex items-center justify-center rounded-[10px] hover:bg-[#593cbc] cursor-pointer text-[14px] text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed"
@@ -216,15 +231,14 @@ export default function Auth() {
                             {/* Role Selection */}
                             <div className="mb-[20px] w-[308px]">
                                 <div className="text-[14px] text-white mb-[8px]">Login as:</div>
-                                <div className="flex gap-[8px]">
+                                <div className="grid grid-cols-2 gap-[8px]">
                                     <button
                                         type="button"
                                         onClick={() => setSelectedRole('student')}
-                                        className={`flex-1 h-[44px] flex items-center justify-center gap-[8px] rounded-[10px] border-[1px] ${
-                                            selectedRole === 'student' 
-                                                ? 'bg-[#7848ff] border-[#7848ff] text-white' 
+                                        className={`h-[44px] flex items-center justify-center gap-[8px] rounded-[10px] border-[1px] ${selectedRole === 'student'
+                                                ? 'bg-[#7848ff] border-[#7848ff] text-white'
                                                 : 'bg-[#222222] border-white/10 text-[#888888] hover:bg-[#383838]'
-                                        }`}
+                                            }`}
                                     >
                                         <User className="size-[16px]" />
                                         <span className="text-[14px] font-medium">Student</span>
@@ -232,41 +246,51 @@ export default function Auth() {
                                     <button
                                         type="button"
                                         onClick={() => setSelectedRole('educator')}
-                                        className={`flex-1 h-[44px] flex items-center justify-center gap-[8px] rounded-[10px] border-[1px] ${
-                                            selectedRole === 'educator' 
-                                                ? 'bg-[#7848ff] border-[#7848ff] text-white' 
+                                        className={`h-[44px] flex items-center justify-center gap-[8px] rounded-[10px] border-[1px] ${selectedRole === 'educator'
+                                                ? 'bg-[#7848ff] border-[#7848ff] text-white'
                                                 : 'bg-[#222222] border-white/10 text-[#888888] hover:bg-[#383838]'
-                                        }`}
+                                            }`}
                                     >
                                         <GraduationCap className="size-[16px]" />
                                         <span className="text-[14px] font-medium">Educator</span>
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setSelectedRole('industry_expert')}
+                                        className={`col-span-2 h-[44px] flex items-center justify-center gap-[8px] rounded-[10px] border-[1px] ${selectedRole === 'industry_expert'
+                                                ? 'bg-[#7848ff] border-[#7848ff] text-white'
+                                                : 'bg-[#222222] border-white/10 text-[#888888] hover:bg-[#383838]'
+                                            }`}
+                                    >
+                                        <Briefcase className="size-[16px]" />
+                                        <span className="text-[14px] font-medium">Industry Expert</span>
                                     </button>
                                 </div>
                             </div>
 
                             <form onSubmit={handleEmailLogin} className="flex flex-col gap-[8px]">
-                                <input 
+                                <input
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    className="text-white focus:outline-[1px] focus:outline-[#bb86fc]/80 h-[39px] w-[300px] py-[8px] px-[12px] bg-[#2b2b2b] rounded-[8px] caret-white placeholder:text-white/50 text-[14px]" 
+                                    className="text-white focus:outline-[1px] focus:outline-[#bb86fc]/80 h-[39px] w-[300px] py-[8px] px-[12px] bg-[#2b2b2b] rounded-[8px] caret-white placeholder:text-white/50 text-[14px]"
                                     placeholder="Email"
-                                    required 
+                                    required
                                 />
-                                <input 
+                                <input
                                     type="password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="text-white focus:outline-1 focus:outline-[#bb86fc]/80 h-[39px] w-[300px] py-[8px] px-[12px] bg-[#2b2b2b] rounded-[8px] caret-white placeholder:text-white/50 text-[14px]" 
+                                    className="text-white focus:outline-1 focus:outline-[#bb86fc]/80 h-[39px] w-[300px] py-[8px] px-[12px] bg-[#2b2b2b] rounded-[8px] caret-white placeholder:text-white/50 text-[14px]"
                                     placeholder="Password"
-                                    required 
+                                    required
                                 />
                                 {error && (
                                     <div className="text-red-500 text-[12px] text-center">
                                         {error}
                                     </div>
                                 )}
-                                <button 
+                                <button
                                     type="submit"
                                     disabled={loading}
                                     className="bg-[#7848ff] w-[300px] h-[40px] flex items-center justify-center rounded-[10px] hover:bg-[#593cbc] cursor-pointer text-[14px] text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed"

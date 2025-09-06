@@ -23,7 +23,7 @@ export default function Sidebar() {
         <div className={` flex flex-col justify-between m-[8px] mr-0 ${isSidebarClosed ? " w-[68px] min-w-[68px]" : "min-w-[232px] w-[232px]"}`}>
             <div className={` text-white flex flex-col gap-[12px] transition-all duration-300 ${isSidebarClosed ? " w-[68px] min-w-[68px]" : "min-w-[232px] w-[232px]"} h-[100vh] `}>
                 <div className={`text-lg font-bold h-[40px] flex items-center ${isSidebarClosed ? "justify-center ml-[0px]" : "justify-between ml-[12px]"}`}>
-                    {!isSidebarClosed && <div>Sidebar</div>}
+                    {!isSidebarClosed && <div>SkillNest</div>}
                     <div className="flex hover:bg-[#1d1d1d] rounded-[8px] " onClick={() => { setIsSidebarClosed(!isSidebarClosed); localStorage.setItem('isSidebarClosed', `${!isSidebarClosed}`) }}>
                         {isSidebarClosed ? <PanelRightOpen className="size-[32px] p-[6px] text-[#888888] hover:text-white cursor-pointer rotate-180" /> :
                             <PanelLeftClose className="size-[32px] p-[6px] text-[#888888] hover:text-white cursor-pointer" />}
