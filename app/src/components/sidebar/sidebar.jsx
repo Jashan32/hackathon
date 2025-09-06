@@ -3,7 +3,7 @@ import { useState } from "react";
 import projectsSVG from "../../../assets/projects.svg";
 import homeSVG from "../../../assets/home.svg";
 import scheduleSVG from "../../../assets/schedule.svg";
-import { PanelLeftClose, PanelRightOpen, PartyPopper, Settings, UserStar } from 'lucide-react';
+import { GraduationCap, PanelLeftClose, PanelRightOpen, PartyPopper, Settings, UserStar } from 'lucide-react';
 import { useLocation } from "react-router-dom";
 
 export default function Sidebar() {
@@ -42,14 +42,9 @@ export default function Sidebar() {
                             <div className={`${isSidebarClosed ? "text-[10px]" : "text-[14px]"} font-medium`}>Courses</div>
                         </div>
                         <div className={`${isSidebarClosed ? "flex flex-col" : ""} ${currentTab === "schedule" ? "bg-[#1d1d1d]" : ""}`}
-                            onClick={() => navigate("/dashboard/edu/schedule")}>
-                            <img src={scheduleSVG} style={{ filter: 'invert(1)' }} className={`${isSidebarClosed ? "h-[20px]" : "h-[24px]"}`} />
-                            <div className={`${isSidebarClosed ? "text-[10px]" : "text-[14px]"} font-medium`}>Schedule</div>
-                        </div>
-                        <div className={`${isSidebarClosed ? "flex flex-col" : ""} ${currentTab === "reviews" ? "bg-[#1d1d1d]" : ""}`}
-                            onClick={() => navigate("/dashboard/edu/reviews")}>
-                                <UserStar className="text-white"/>
-                            <div className={`${isSidebarClosed ? "text-[10px]" : "text-[14px]"} font-medium`}>Reviews</div>
+                            onClick={() => navigate("/dashboard/edu/tas")}>
+                            <GraduationCap className="size-[24px] text-white" />
+                            <div className={`${isSidebarClosed ? "text-[10px]" : "text-[14px]"} font-medium`}>TAs</div>
                         </div>
                     </div>
                     <div>

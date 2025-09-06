@@ -12,6 +12,8 @@ import CreateCourse from './components/courses/create.jsx'
 import CourseAnalysis from './components/courses/analysis.jsx'
 import ManageCourse from './components/courses/manage.jsx'
 import EditCourse from './components/courses/edit.jsx'
+import Tas from './components/tas/tas.jsx'
+import AddTas from './components/tas/addtas.jsx'
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -24,10 +26,11 @@ createRoot(document.getElementById('root')).render(
          <Route path="courses/:courseId/manage" element={<ManageCourse />} />
          <Route path="courses/:courseId/edit" element={<EditCourse />} />
          <Route path="courses/create" element={<CreateCourse />} />
-         <Route path="schedule" element={<Schedule />} />
+         <Route path="tas" element={<Tas />} />
          <Route path="settings" element={<Settings />} />
          <Route path="new" element={<Settings />} />
          <Route path="reviews" element={<Reviews />} />
+         <Route path="addtas" element={<AddTas />} />
         {/*<Route path="reviews" element={<CreateProject />} />
         <Route path="payments" element={<ViewProject />} />
         <Route path="settings" element={<Schedule />} /> */}

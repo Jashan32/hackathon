@@ -11,6 +11,7 @@ import documentRoutes from './routes/documents.js';
 import mentorshipRoutes from './routes/mentorship.js';
 import progressRoutes from './routes/progress.js';
 import assignmentRoutes from './routes/assignments.js';
+import taRoutes from './routes/tas.js';
 
 dotenv.config();
 
@@ -31,6 +32,7 @@ app.use('/api/documents', documentRoutes);
 app.use('/api/mentorship', mentorshipRoutes);
 app.use('/api/progress', progressRoutes);
 app.use('/api/assignments', assignmentRoutes);
+app.use('/api/tas', taRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
@@ -60,6 +62,7 @@ app.use((req, res) => {
 
 async function main() {
     try {
+        console.log(MONGO_URI)
         await mongoose.connect(MONGO_URI);
         console.log('Connected to MongoDB');
         
