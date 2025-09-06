@@ -106,7 +106,8 @@ export default function CreateCourse() {
 
             if (response.ok) {
                 const data = await response.json();
-                navigate('/dashboard/edu/courses');
+                // Redirect to manage course to add curriculum
+                navigate(`/dashboard/edu/courses/${data.course._id}/manage`);
             } else {
                 const errorData = await response.json();
                 setErrors({ submit: errorData.error || 'Failed to create course' });

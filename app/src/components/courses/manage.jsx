@@ -282,57 +282,441 @@ function OverviewTab({ course }) {
 }
 
 function ContentTab({ course }) {
-    const [lectures, setLectures] = useState([]);
-    const [documents, setDocuments] = useState([]);
+    const [curriculum, setCurriculum] = useState(course.curriculum || []);
+    const [showAddSection, setShowAddSection] = useState(false);
+    const [showAddLecture, setShowAddLecture] = useState(null);
+    const [loading, setLoading] = useState(false);
+
+    const addSection = async (sectionData) => {
+        setLoading(true);
+        try {
+            const response = await fetch(`http://localhost:3000/api/courses/${course._id}/curriculum/sections`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify(sectionData)
+            });
+
+            if (response.ok) {
+                // Refresh course data
+                window.location.reload();
+            }
+        } catch (error) {
+            console.error('Failed to add section:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const addLecture = async (sectionId, lectureData) => {
+        setLoading(true);
+        try {
+            const response = await fetch(`http://localhost:3000/api/courses/${course._id}/curriculum/sections/${sectionId}/lectures`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify(lectureData)
+            });
+
+            if (response.ok) {
+                // Refresh course data
+                window.location.reload();
+            }
+        } catch (error) {
+            console.error('Failed to add lecture:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const getTotalLectures = () => {
+        return curriculum.reduce((total, section) => total + section.lectures.length, 0);
+    };
+
+    const getTotalDuration = () => {
+        let totalSeconds = 0;
+        curriculum.forEach(section => {
+            section.lectures.forEach(lecture => {
+                const [minutes, seconds] = lecture.duration.split(':').map(Number);
+                totalSeconds += (minutes * 60) + seconds;
+            });
+        });
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        return `${hours}h ${minutes}m`;
+    };
 
     return (
         <div className="space-y-[24px]">
             <div className="flex justify-between items-center">
-                <h3 className="text-white text-[20px] font-semibold">Course Content</h3>
-                <div className="flex gap-[12px]">
-                    <button className="flex items-center gap-[8px] bg-[#e43b58] hover:bg-[#c73650] text-white px-[16px] py-[8px] rounded-[8px] transition-colors">
-                        <Plus className="size-[16px]" />
-                        Add Lecture
-                    </button>
-                    <button className="flex items-center gap-[8px] bg-[#383838] hover:bg-[#4a4a4a] text-white px-[16px] py-[8px] rounded-[8px] transition-colors">
-                        <FileText className="size-[16px]" />
-                        Add Document
-                    </button>
+                <div>
+                    <h3 className="text-white text-[20px] font-semibold">Course Curriculum</h3>
+                    <p className="text-[#888888] text-[14px]">
+                        {curriculum.length} sections • {getTotalLectures()} lectures • {getTotalDuration()}
+                    </p>
                 </div>
+                <button 
+                    onClick={() => setShowAddSection(true)}
+                    className="flex items-center gap-[8px] bg-[#e43b58] hover:bg-[#c73650] text-white px-[16px] py-[8px] rounded-[8px] transition-colors"
+                >
+                    <Plus className="size-[16px]" />
+                    Add Section
+                </button>
             </div>
 
-            {/* Lectures Section */}
-            <div className="bg-[#1d1d1d] border border-white/10 rounded-[12px] p-[24px]">
-                <div className="flex items-center justify-between mb-[16px]">
-                    <h4 className="text-white text-[16px] font-medium">Lectures</h4>
-                    <span className="text-[#888888] text-[14px]">0 lectures</span>
-                </div>
-                
-                <div className="text-center py-[40px]">
-                    <Video className="size-[48px] text-[#888888] mx-auto mb-[16px]" />
-                    <h4 className="text-white text-[16px] font-medium mb-[8px]">No lectures yet</h4>
-                    <p className="text-[#888888] text-[14px] mb-[20px]">Start building your course by adding video lectures</p>
-                    <button className="bg-[#e43b58] hover:bg-[#c73650] text-white px-[20px] py-[12px] rounded-[8px] transition-colors">
-                        Add First Lecture
-                    </button>
-                </div>
-            </div>
+            {/* Add Section Modal */}
+            {showAddSection && (
+                <AddSectionModal 
+                    onAdd={addSection}
+                    onCancel={() => setShowAddSection(false)}
+                    loading={loading}
+                />
+            )}
 
-            {/* Documents Section */}
-            <div className="bg-[#1d1d1d] border border-white/10 rounded-[12px] p-[24px]">
-                <div className="flex items-center justify-between mb-[16px]">
-                    <h4 className="text-white text-[16px] font-medium">Course Materials</h4>
-                    <span className="text-[#888888] text-[14px]">0 documents</span>
+            {/* Add Lecture Modal */}
+            {showAddLecture && (
+                <AddLectureModal 
+                    sectionId={showAddLecture}
+                    onAdd={(lectureData) => addLecture(showAddLecture, lectureData)}
+                    onCancel={() => setShowAddLecture(null)}
+                    loading={loading}
+                />
+            )}
+
+            {/* Curriculum Sections */}
+            {curriculum.length > 0 ? (
+                <div className="space-y-[16px]">
+                    {curriculum.map((section, sectionIndex) => (
+                        <div key={section._id} className="bg-[#1d1d1d] border border-white/10 rounded-[12px] overflow-hidden">
+                            {/* Section Header */}
+                            <div className="bg-[#383838] p-[20px]">
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <h4 className="text-white text-[16px] font-semibold mb-[4px]">
+                                            Section {sectionIndex + 1}: {section.title}
+                                        </h4>
+                                        {section.description && (
+                                            <p className="text-[#888888] text-[14px]">{section.description}</p>
+                                        )}
+                                    </div>
+                                    <div className="flex items-center gap-[12px]">
+                                        <span className="text-[#888888] text-[12px]">
+                                            {section.lectures.length} lectures
+                                        </span>
+                                        <button 
+                                            onClick={() => setShowAddLecture(section._id)}
+                                            className="flex items-center gap-[6px] bg-[#e43b58] hover:bg-[#c73650] text-white px-[12px] py-[6px] rounded-[6px] text-[12px] transition-colors"
+                                        >
+                                            <Plus className="size-[12px]" />
+                                            Add Lecture
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Lectures */}
+                            <div className="divide-y divide-white/10">
+                                {section.lectures.length > 0 ? (
+                                    section.lectures.map((lecture, lectureIndex) => (
+                                        <div key={lecture._id} className="p-[20px] hover:bg-[#383838]/20 transition-colors">
+                                            <div className="flex items-center gap-[16px]">
+                                                <div className="w-[32px] h-[32px] bg-[#0d0d0d] rounded-[6px] flex items-center justify-center">
+                                                    <Video className="size-[16px] text-[#888888]" />
+                                                </div>
+                                                <div className="flex-1">
+                                                    <div className="flex items-center gap-[8px] mb-[4px]">
+                                                        <h5 className="text-white text-[14px] font-medium">
+                                                            {lectureIndex + 1}. {lecture.title}
+                                                        </h5>
+                                                        {lecture.isPreview && (
+                                                            <span className="bg-[#e43b58] text-white text-[10px] px-[6px] py-[1px] rounded-full">
+                                                                Preview
+                                                            </span>
+                                                        )}
+                                                        <span className={`text-[10px] px-[6px] py-[1px] rounded-full ${
+                                                            lecture.isPublished 
+                                                                ? 'bg-green-500/20 text-green-400' 
+                                                                : 'bg-orange-500/20 text-orange-400'
+                                                        }`}>
+                                                            {lecture.isPublished ? 'Published' : 'Draft'}
+                                                        </span>
+                                                    </div>
+                                                    <div className="flex items-center gap-[12px] text-[12px] text-[#888888]">
+                                                        <span>{lecture.duration}</span>
+                                                        <span>•</span>
+                                                        <span className="capitalize">{lecture.type}</span>
+                                                        {lecture.description && (
+                                                            <>
+                                                                <span>•</span>
+                                                                <span className="truncate max-w-[200px]">{lecture.description}</span>
+                                                            </>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-center gap-[8px]">
+                                                    <button className="w-[32px] h-[32px] bg-[#383838] hover:bg-[#4a4a4a] rounded-[6px] flex items-center justify-center transition-colors">
+                                                        <Edit className="size-[14px] text-white" />
+                                                    </button>
+                                                    <button className="w-[32px] h-[32px] bg-red-600 hover:bg-red-700 rounded-[6px] flex items-center justify-center transition-colors">
+                                                        <Trash2 className="size-[14px] text-white" />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div className="p-[20px] text-center">
+                                        <p className="text-[#888888] text-[14px]">No lectures in this section yet</p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    ))}
                 </div>
-                
-                <div className="text-center py-[40px]">
-                    <FileText className="size-[48px] text-[#888888] mx-auto mb-[16px]" />
-                    <h4 className="text-white text-[16px] font-medium mb-[8px]">No materials yet</h4>
-                    <p className="text-[#888888] text-[14px] mb-[20px]">Upload PDFs, slides, and other course materials</p>
-                    <button className="bg-[#383838] hover:bg-[#4a4a4a] text-white px-[20px] py-[12px] rounded-[8px] transition-colors">
-                        Upload Materials
+            ) : (
+                <div className="bg-[#1d1d1d] border border-white/10 rounded-[12px] p-[40px] text-center">
+                    <BookOpen className="size-[48px] text-[#888888] mx-auto mb-[16px]" />
+                    <h4 className="text-white text-[16px] font-semibold mb-[8px]">No curriculum yet</h4>
+                    <p className="text-[#888888] text-[14px] mb-[20px]">
+                        Start building your course by adding sections and lectures
+                    </p>
+                    <button 
+                        onClick={() => setShowAddSection(true)}
+                        className="bg-[#e43b58] hover:bg-[#c73650] text-white px-[20px] py-[12px] rounded-[8px] transition-colors"
+                    >
+                        Add First Section
                     </button>
                 </div>
+            )}
+        </div>
+    );
+}
+
+// Add Section Modal Component
+function AddSectionModal({ onAdd, onCancel, loading }) {
+    const [formData, setFormData] = useState({
+        title: '',
+        description: ''
+    });
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (formData.title.trim()) {
+            onAdd(formData);
+            setFormData({ title: '', description: '' });
+        }
+    };
+
+    return (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <div className="bg-[#1d1d1d] border border-white/10 rounded-[12px] p-[24px] w-[500px] max-w-[90vw]">
+                <h3 className="text-white text-[18px] font-semibold mb-[20px]">Add New Section</h3>
+                
+                <form onSubmit={handleSubmit} className="space-y-[16px]">
+                    <div>
+                        <label className="block text-white text-[14px] font-medium mb-[8px]">
+                            Section Title *
+                        </label>
+                        <input
+                            type="text"
+                            value={formData.title}
+                            onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+                            placeholder="e.g., Introduction to React"
+                            className="w-full bg-[#0d0d0d] border border-white/10 rounded-[8px] px-[16px] py-[12px] text-white placeholder-[#888888] focus:border-[#e43b58] focus:outline-none"
+                        />
+                    </div>
+                    
+                    <div>
+                        <label className="block text-white text-[14px] font-medium mb-[8px]">
+                            Description
+                        </label>
+                        <textarea
+                            value={formData.description}
+                            onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                            placeholder="Brief description of this section"
+                            rows="3"
+                            className="w-full bg-[#0d0d0d] border border-white/10 rounded-[8px] px-[16px] py-[12px] text-white placeholder-[#888888] focus:border-[#e43b58] focus:outline-none resize-none"
+                        />
+                    </div>
+                    
+                    <div className="flex gap-[12px] pt-[16px]">
+                        <button
+                            type="button"
+                            onClick={onCancel}
+                            className="flex-1 bg-[#383838] hover:bg-[#4a4a4a] text-white py-[12px] rounded-[8px] transition-colors"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            disabled={loading || !formData.title.trim()}
+                            className="flex-1 bg-[#e43b58] hover:bg-[#c73650] disabled:opacity-50 text-white py-[12px] rounded-[8px] transition-colors"
+                        >
+                            {loading ? 'Adding...' : 'Add Section'}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    );
+}
+
+// Add Lecture Modal Component
+function AddLectureModal({ sectionId, onAdd, onCancel, loading }) {
+    const [formData, setFormData] = useState({
+        title: '',
+        description: '',
+        duration: '',
+        type: 'video',
+        videoUrl: '',
+        documentUrl: '',
+        isPreview: false
+    });
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (formData.title.trim() && formData.duration.trim()) {
+            onAdd(formData);
+            setFormData({
+                title: '',
+                description: '',
+                duration: '',
+                type: 'video',
+                videoUrl: '',
+                documentUrl: '',
+                isPreview: false
+            });
+        }
+    };
+
+    return (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <div className="bg-[#1d1d1d] border border-white/10 rounded-[12px] p-[24px] w-[600px] max-w-[90vw] max-h-[90vh] overflow-y-auto">
+                <h3 className="text-white text-[18px] font-semibold mb-[20px]">Add New Lecture</h3>
+                
+                <form onSubmit={handleSubmit} className="space-y-[16px]">
+                    <div className="grid grid-cols-2 gap-[16px]">
+                        <div className="col-span-2">
+                            <label className="block text-white text-[14px] font-medium mb-[8px]">
+                                Lecture Title *
+                            </label>
+                            <input
+                                type="text"
+                                value={formData.title}
+                                onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+                                placeholder="e.g., Introduction to Hooks"
+                                className="w-full bg-[#0d0d0d] border border-white/10 rounded-[8px] px-[16px] py-[12px] text-white placeholder-[#888888] focus:border-[#e43b58] focus:outline-none"
+                            />
+                        </div>
+                        
+                        <div>
+                            <label className="block text-white text-[14px] font-medium mb-[8px]">
+                                Duration *
+                            </label>
+                            <input
+                                type="text"
+                                value={formData.duration}
+                                onChange={(e) => setFormData(prev => ({ ...prev, duration: e.target.value }))}
+                                placeholder="e.g., 12:30"
+                                pattern="[0-9]+:[0-5][0-9]"
+                                className="w-full bg-[#0d0d0d] border border-white/10 rounded-[8px] px-[16px] py-[12px] text-white placeholder-[#888888] focus:border-[#e43b58] focus:outline-none"
+                            />
+                        </div>
+                        
+                        <div>
+                            <label className="block text-white text-[14px] font-medium mb-[8px]">
+                                Type
+                            </label>
+                            <select
+                                value={formData.type}
+                                onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value }))}
+                                className="w-full bg-[#0d0d0d] border border-white/10 rounded-[8px] px-[16px] py-[12px] text-white focus:border-[#e43b58] focus:outline-none"
+                            >
+                                <option value="video">Video</option>
+                                <option value="document">Document</option>
+                                <option value="quiz">Quiz</option>
+                                <option value="assignment">Assignment</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label className="block text-white text-[14px] font-medium mb-[8px]">
+                            Description
+                        </label>
+                        <textarea
+                            value={formData.description}
+                            onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                            placeholder="Brief description of this lecture"
+                            rows="2"
+                            className="w-full bg-[#0d0d0d] border border-white/10 rounded-[8px] px-[16px] py-[12px] text-white placeholder-[#888888] focus:border-[#e43b58] focus:outline-none resize-none"
+                        />
+                    </div>
+                    
+                    {formData.type === 'video' && (
+                        <div>
+                            <label className="block text-white text-[14px] font-medium mb-[8px]">
+                                Video URL
+                            </label>
+                            <input
+                                type="url"
+                                value={formData.videoUrl}
+                                onChange={(e) => setFormData(prev => ({ ...prev, videoUrl: e.target.value }))}
+                                placeholder="https://example.com/video.mp4"
+                                className="w-full bg-[#0d0d0d] border border-white/10 rounded-[8px] px-[16px] py-[12px] text-white placeholder-[#888888] focus:border-[#e43b58] focus:outline-none"
+                            />
+                        </div>
+                    )}
+                    
+                    {formData.type === 'document' && (
+                        <div>
+                            <label className="block text-white text-[14px] font-medium mb-[8px]">
+                                Document URL
+                            </label>
+                            <input
+                                type="url"
+                                value={formData.documentUrl}
+                                onChange={(e) => setFormData(prev => ({ ...prev, documentUrl: e.target.value }))}
+                                placeholder="https://example.com/document.pdf"
+                                className="w-full bg-[#0d0d0d] border border-white/10 rounded-[8px] px-[16px] py-[12px] text-white placeholder-[#888888] focus:border-[#e43b58] focus:outline-none"
+                            />
+                        </div>
+                    )}
+                    
+                    <div className="flex items-center gap-[8px]">
+                        <input
+                            type="checkbox"
+                            id="isPreview"
+                            checked={formData.isPreview}
+                            onChange={(e) => setFormData(prev => ({ ...prev, isPreview: e.target.checked }))}
+                            className="w-[16px] h-[16px] bg-[#0d0d0d] border border-white/10 rounded-[4px] text-[#e43b58] focus:ring-[#e43b58]"
+                        />
+                        <label htmlFor="isPreview" className="text-white text-[14px]">
+                            Make this a preview lecture (free for everyone)
+                        </label>
+                    </div>
+                    
+                    <div className="flex gap-[12px] pt-[16px]">
+                        <button
+                            type="button"
+                            onClick={onCancel}
+                            className="flex-1 bg-[#383838] hover:bg-[#4a4a4a] text-white py-[12px] rounded-[8px] transition-colors"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            disabled={loading || !formData.title.trim() || !formData.duration.trim()}
+                            className="flex-1 bg-[#e43b58] hover:bg-[#c73650] disabled:opacity-50 text-white py-[12px] rounded-[8px] transition-colors"
+                        >
+                            {loading ? 'Adding...' : 'Add Lecture'}
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     );

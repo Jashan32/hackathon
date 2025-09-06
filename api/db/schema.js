@@ -89,6 +89,85 @@ const courseSchema = new Schema({
         type: Boolean,
         default: false
     },
+    curriculum: [{
+        _id: {
+            type: Schema.Types.ObjectId,
+            default: () => new mongoose.Types.ObjectId()
+        },
+        title: {
+            type: String,
+            required: true,
+            trim: true
+        },
+        description: {
+            type: String,
+            default: ''
+        },
+        order: {
+            type: Number,
+            required: true
+        },
+        lectures: [{
+            _id: {
+                type: Schema.Types.ObjectId,
+                default: () => new mongoose.Types.ObjectId()
+            },
+            title: {
+                type: String,
+                required: true,
+                trim: true
+            },
+            description: {
+                type: String,
+                default: ''
+            },
+            duration: {
+                type: String, // e.g., "12:30"
+                required: true
+            },
+            type: {
+                type: String,
+                enum: ['video', 'document', 'quiz', 'assignment'],
+                default: 'video'
+            },
+            videoUrl: {
+                type: String,
+                default: ''
+            },
+            documentUrl: {
+                type: String,
+                default: ''
+            },
+            order: {
+                type: Number,
+                required: true
+            },
+            isPreview: {
+                type: Boolean,
+                default: false
+            },
+            isPublished: {
+                type: Boolean,
+                default: false
+            },
+            createdAt: {
+                type: Date,
+                default: Date.now
+            },
+            updatedAt: {
+                type: Date,
+                default: Date.now
+            }
+        }],
+        createdAt: {
+            type: Date,
+            default: Date.now
+        },
+        updatedAt: {
+            type: Date,
+            default: Date.now
+        }
+    }],
     enrolledStudents: [{
         student: {
             type: Schema.Types.ObjectId,
@@ -306,22 +385,33 @@ const studentProgressSchema = new Schema({
         ref: 'Course',
         required: true
     },
-    lecturesWatched: [{
-        lecture: {
+    lecturesProgress: [{
+        sectionId: {
             type: Schema.Types.ObjectId,
-            ref: 'Lecture'
+            required: true
         },
-        watchedAt: {
-            type: Date,
-            default: Date.now
+        lectureId: {
+            type: Schema.Types.ObjectId,
+            required: true
+        },
+        isCompleted: {
+            type: Boolean,
+            default: false
+        },
+        isLocked: {
+            type: Boolean,
+            default: true
         },
         watchTime: {
             type: Number, // in seconds
             default: 0
         },
-        isCompleted: {
-            type: Boolean,
-            default: false
+        lastWatchedAt: {
+            type: Date,
+            default: Date.now
+        },
+        completedAt: {
+            type: Date
         }
     }],
     documentsViewed: [{
@@ -340,10 +430,39 @@ const studentProgressSchema = new Schema({
         min: 0,
         max: 100
     },
+    currentLecture: {
+        sectionId: {
+            type: Schema.Types.ObjectId
+        },
+        lectureId: {
+            type: Schema.Types.ObjectId
+        }
+    },
     lastAccessed: {
         type: Date,
         default: Date.now
     },
+    totalTimeSpent: {
+        type: Number, // in minutes
+        default: 0
+    },
+    streak: {
+        type: Number,
+        default: 0
+    },
+    achievements: [{
+        name: {
+            type: String,
+            required: true
+        },
+        earnedAt: {
+            type: Date,
+            default: Date.now
+        },
+        description: {
+            type: String
+        }
+    }],
     createdAt: {
         type: Date,
         default: Date.now

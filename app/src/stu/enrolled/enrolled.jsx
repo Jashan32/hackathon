@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
     BookOpen, 
     Play, 
@@ -25,6 +26,7 @@ import {
 } from 'lucide-react';
 
 export default function Enrolled() {
+    const navigate = useNavigate();
     const [enrolledCourses, setEnrolledCourses] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
@@ -322,6 +324,7 @@ export default function Enrolled() {
                             key={course._id}
                             course={course}
                             viewMode={viewMode}
+                            navigate={navigate}
                             getProgressStatus={getProgressStatus}
                             getProgressColor={getProgressColor}
                         />
@@ -335,7 +338,7 @@ export default function Enrolled() {
                         Start your learning journey by enrolling in courses that interest you
                     </p>
                     <button 
-                        onClick={() => window.location.href = '/dashboard/stu/courses'}
+                        onClick={() => navigate('/dashboard/stu/courses')}
                         className="bg-[#e43b58] hover:bg-[#c73650] text-white px-[24px] py-[12px] rounded-[8px] transition-colors"
                     >
                         Browse Courses
@@ -364,23 +367,24 @@ export default function Enrolled() {
     );
 }
 
-function EnrolledCourseCard({ course, viewMode, getProgressStatus, getProgressColor }) {
+function EnrolledCourseCard({ course, viewMode, navigate, getProgressStatus, getProgressColor }) {
     const [showDropdown, setShowDropdown] = useState(false);
     const progressStatus = getProgressStatus(course.progress);
 
     const handleContinueLearning = () => {
-        // Navigate to course content/lectures
-        console.log('Continue learning:', course._id);
+        // Navigate to course detail view where they can access content
+        navigate(`/dashboard/stu/enrolled/${course._id}`);
     };
 
     const handleViewCertificate = () => {
-        // Navigate to certificate view
-        console.log('View certificate:', course._id);
+        // Navigate to certificate view - for now, go to course detail
+        navigate(`/dashboard/stu/enrolled/${course._id}`);
     };
 
     if (viewMode === 'list') {
         return (
-            <div className="bg-[#1d1d1d] border border-white/10 rounded-[12px] p-[20px] hover:border-white/20 transition-colors">
+            <div className="bg-[#1d1d1d] border border-white/10 rounded-[12px] p-[20px] hover:border-white/20 transition-colors cursor-pointer"
+                 onClick={() => navigate(`/dashboard/stu/enrolled/${course._id}`)}>
                 <div className="flex gap-[20px]">
                     {/* Thumbnail */}
                     <div className="w-[120px] h-[80px] bg-[#383838] rounded-[8px] flex-shrink-0 overflow-hidden">
@@ -401,7 +405,7 @@ function EnrolledCourseCard({ course, viewMode, getProgressStatus, getProgressCo
                     <div className="flex-1">
                         <div className="flex items-start justify-between mb-[12px]">
                             <div className="flex-1">
-                                <h3 className="text-white text-[18px] font-semibold mb-[4px]">{course.title}</h3>
+                                <h3 className="text-white text-[18px] font-semibold mb-[4px] hover:text-[#e43b58] transition-colors">{course.title}</h3>
                                 <div className="flex items-center gap-[16px] text-[12px] mb-[8px]">
                                     <span className="text-[#888888]">
                                         By {course.educator.firstName} {course.educator.lastName}
@@ -438,7 +442,7 @@ function EnrolledCourseCard({ course, viewMode, getProgressStatus, getProgressCo
                                 </div>
                             </div>
 
-                            <div className="flex items-center gap-[8px]">
+                            <div className="flex items-center gap-[8px]" onClick={(e) => e.stopPropagation()}>
                                 {course.certificateEarned && (
                                     <button
                                         onClick={handleViewCertificate}
@@ -462,7 +466,8 @@ function EnrolledCourseCard({ course, viewMode, getProgressStatus, getProgressCo
     }
 
     return (
-        <div className="bg-[#1d1d1d] border border-white/10 rounded-[12px] overflow-hidden hover:border-white/20 transition-colors">
+        <div className="bg-[#1d1d1d] border border-white/10 rounded-[12px] overflow-hidden hover:border-white/20 transition-colors cursor-pointer"
+             onClick={() => navigate(`/dashboard/stu/enrolled/${course._id}`)}>
             {/* Thumbnail */}
             <div className="relative h-[160px] bg-[#383838] overflow-hidden">
                 {course.thumbnail ? (
@@ -502,7 +507,7 @@ function EnrolledCourseCard({ course, viewMode, getProgressStatus, getProgressCo
             {/* Content */}
             <div className="p-[20px]">
                 <div className="mb-[12px]">
-                    <h3 className="text-white text-[16px] font-semibold mb-[8px] line-clamp-2">
+                    <h3 className="text-white text-[16px] font-semibold mb-[8px] line-clamp-2 hover:text-[#e43b58] transition-colors">
                         {course.title}
                     </h3>
                     <p className="text-[#888888] text-[12px] mb-[8px]">
@@ -515,7 +520,7 @@ function EnrolledCourseCard({ course, viewMode, getProgressStatus, getProgressCo
                     <span>{course.timeSpent}h spent</span>
                 </div>
 
-                <div className="flex gap-[8px]">
+                <div className="flex gap-[8px]" onClick={(e) => e.stopPropagation()}>
                     {course.certificateEarned && (
                         <button
                             onClick={handleViewCertificate}

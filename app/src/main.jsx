@@ -18,6 +18,7 @@ import StuDashboardLayout from './stu/layouts/dashboardLayout.jsx'
 import StuCourses from './stu/courses/courses.jsx'
 import StuSettings from './stu/settings/settings.jsx'
 import Enrolled from './stu/enrolled/enrolled.jsx'
+import ViewEnrolled from './stu/enrolled/viewEnrolled.jsx'
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -41,6 +42,7 @@ createRoot(document.getElementById('root')).render(
         <Route index element={<Navigate to="courses" replace />} />
          <Route path="courses" element={<StuCourses />} />
          <Route path="enrolled" element={<Enrolled />} />
+         <Route path="enrolled/:courseId" element={<ViewEnrolled />} />
          <Route path="settings" element={<StuSettings />} />
          <Route path="new" element={<StuSettings />} />
       </Route>

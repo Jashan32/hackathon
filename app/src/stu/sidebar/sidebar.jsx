@@ -32,7 +32,7 @@ export default function StuSidebar() {
                 <div>
                     <div className={`flex flex-col gap-[4px] [&>div]:flex [&>div]:gap-[8px] [&>div]:items-center [&>div]:hover:bg-[#1d1d1d] [&>div]:cursor-pointer [&>div]:rounded-[8px] ${isSidebarClosed ? "[&>div]:h-[68px]" : "[&>div]:h-[40px]"} [&>div]:py-[12px] [&>div]:px-[16px]`}>
                         <div className={`${isSidebarClosed ? "flex flex-col" : ""} ${currentTab === "courses" ? "bg-[#1d1d1d]" : ""}`}
-                            onClick={() => navigate("/dashboard/edu/courses")}>
+                            onClick={() => navigate("/dashboard/stu/courses")}>
                             <img src={projectsSVG} style={{ filter: 'invert(1)' }} className={`${isSidebarClosed ? "h-[20px]" : "h-[24px]"}`} />
                             <div className={`${isSidebarClosed ? "text-[10px]" : "text-[14px]"} font-medium`}>Courses</div>
                         </div>
@@ -49,7 +49,7 @@ export default function StuSidebar() {
             </div>
             <div className="flex flex-col">
                 <div className={`py-[8px] px-[16px] hover:bg-[#1d1d1d] rounded-[8px] ${isSidebarClosed ? "flex flex-col" : ""} ${currentTab === "new" ? "bg-[#1d1d1d]" : ""}`}
-                    onClick={() => navigate("/dashboard/edu/new")}>
+                    onClick={() => navigate("/dashboard/stu/new")}>
                     <div className="flex gap-[8px] cursor-pointer items-center mb-[4px]">
                         <div>
                             <PartyPopper className="size-[24px] text-white" />
@@ -58,7 +58,7 @@ export default function StuSidebar() {
                     </div>
                 </div>
                 <div className={`py-[8px] px-[16px] hover:bg-[#1d1d1d] rounded-[8px] ${isSidebarClosed ? "flex flex-col" : ""} ${currentTab === "settings" ? "bg-[#1d1d1d]" : ""}`}
-                    onClick={() => navigate("/dashboard/edu/settings")}>
+                    onClick={() => navigate("/dashboard/stu/settings")}>
                     <div className="flex gap-[8px] cursor-pointer items-center">
                         <div>
                             <Settings className="size-[24px] text-white" />
