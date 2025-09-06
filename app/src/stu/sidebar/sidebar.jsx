@@ -6,7 +6,7 @@ import scheduleSVG from "../../../assets/schedule.svg";
 import { GraduationCap, PanelLeftClose, PanelRightOpen, PartyPopper, Settings, UserStar } from 'lucide-react';
 import { useLocation } from "react-router-dom";
 
-export default function Sidebar() {
+export default function StuSidebar() {
     const navigate = useNavigate();
     const [isSidebarClosed, setIsSidebarClosed] = useState(localStorage.getItem('isSidebarClosed') == 'true');
     const profilePicUrl = localStorage.getItem('profilePic') || '';

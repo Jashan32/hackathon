@@ -14,6 +14,9 @@ import ManageCourse from './components/courses/manage.jsx'
 import EditCourse from './components/courses/edit.jsx'
 import Tas from './components/tas/tas.jsx'
 import AddTas from './components/tas/addtas.jsx'
+import StuDashboardLayout from './stu/layouts/dashboardLayout.jsx'
+import StuCourses from './stu/courses/courses.jsx'
+import StuSettings from './stu/settings/settings.jsx'
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -31,9 +34,13 @@ createRoot(document.getElementById('root')).render(
          <Route path="new" element={<Settings />} />
          <Route path="reviews" element={<Reviews />} />
          <Route path="addtas" element={<AddTas />} />
-        {/*<Route path="reviews" element={<CreateProject />} />
-        <Route path="payments" element={<ViewProject />} />
-        <Route path="settings" element={<Schedule />} /> */}
+      </Route>
+
+      <Route path="/dashboard/stu" element={<StuDashboardLayout />}>
+        <Route index element={<Navigate to="courses" replace />} />
+         <Route path="courses" element={<StuCourses />} />
+         <Route path="settings" element={<StuSettings />} />
+         <Route path="new" element={<StuSettings />} />
       </Route>
     </Routes>
   </BrowserRouter>
