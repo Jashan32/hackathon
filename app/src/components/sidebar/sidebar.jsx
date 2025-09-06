@@ -3,7 +3,7 @@ import { useState } from "react";
 import projectsSVG from "../../../assets/projects.svg";
 import homeSVG from "../../../assets/home.svg";
 import scheduleSVG from "../../../assets/schedule.svg";
-import { PanelLeftClose, PanelRightOpen, PartyPopper, Settings } from 'lucide-react';
+import { PanelLeftClose, PanelRightOpen, PartyPopper, Settings, UserStar } from 'lucide-react';
 import { useLocation } from "react-router-dom";
 
 export default function Sidebar() {
@@ -32,19 +32,24 @@ export default function Sidebar() {
                 <div>
                     <div className={`flex flex-col gap-[4px] [&>div]:flex [&>div]:gap-[8px] [&>div]:items-center [&>div]:hover:bg-[#1d1d1d] [&>div]:cursor-pointer [&>div]:rounded-[8px] ${isSidebarClosed ? "[&>div]:h-[68px]" : "[&>div]:h-[40px]"} [&>div]:py-[12px] [&>div]:px-[16px]`}>
                         <div className={`${isSidebarClosed ? "flex flex-col" : ""} ${currentTab === "home" ? "bg-[#1d1d1d]" : ""}`}
-                            onClick={() => navigate("/dashboard/home")}>
+                            onClick={() => navigate("/dashboard/edu/home")}>
                             <img src={homeSVG} style={{ filter: 'invert(1)' }} className={`${isSidebarClosed ? "h-[20px]" : "h-[24px]"}`} />
                             <div className={`${isSidebarClosed ? "text-[10px]" : "text-[14px]"} font-medium`}>Home</div>
                         </div>
-                        <div className={`${isSidebarClosed ? "flex flex-col" : ""} ${currentTab === "project" ? "bg-[#1d1d1d]" : ""}`}
-                            onClick={() => navigate("/dashboard/project")}>
+                        <div className={`${isSidebarClosed ? "flex flex-col" : ""} ${currentTab === "courses" ? "bg-[#1d1d1d]" : ""}`}
+                            onClick={() => navigate("/dashboard/edu/courses")}>
                             <img src={projectsSVG} style={{ filter: 'invert(1)' }} className={`${isSidebarClosed ? "h-[20px]" : "h-[24px]"}`} />
                             <div className={`${isSidebarClosed ? "text-[10px]" : "text-[14px]"} font-medium`}>Courses</div>
                         </div>
                         <div className={`${isSidebarClosed ? "flex flex-col" : ""} ${currentTab === "schedule" ? "bg-[#1d1d1d]" : ""}`}
-                            onClick={() => navigate("/dashboard/schedule")}>
+                            onClick={() => navigate("/dashboard/edu/schedule")}>
                             <img src={scheduleSVG} style={{ filter: 'invert(1)' }} className={`${isSidebarClosed ? "h-[20px]" : "h-[24px]"}`} />
                             <div className={`${isSidebarClosed ? "text-[10px]" : "text-[14px]"} font-medium`}>Schedule</div>
+                        </div>
+                        <div className={`${isSidebarClosed ? "flex flex-col" : ""} ${currentTab === "reviews" ? "bg-[#1d1d1d]" : ""}`}
+                            onClick={() => navigate("/dashboard/edu/reviews")}>
+                                <UserStar className="text-white"/>
+                            <div className={`${isSidebarClosed ? "text-[10px]" : "text-[14px]"} font-medium`}>Reviews</div>
                         </div>
                     </div>
                     <div>
@@ -53,8 +58,8 @@ export default function Sidebar() {
                 </div>
             </div>
             <div className="flex flex-col">
-                <div className={`py-[8px] px-[16px] hover:bg-[#1d1d1d] rounded-[8px] ${isSidebarClosed ? "flex flex-col" : ""} ${currentTab === "settings" ? "bg-[#1d1d1d]" : ""}`}
-                    onClick={() => navigate("/dashboard/settings/profile")}>
+                <div className={`py-[8px] px-[16px] hover:bg-[#1d1d1d] rounded-[8px] ${isSidebarClosed ? "flex flex-col" : ""} ${currentTab === "new" ? "bg-[#1d1d1d]" : ""}`}
+                    onClick={() => navigate("/dashboard/edu/new")}>
                     <div className="flex gap-[8px] cursor-pointer items-center mb-[4px]">
                         <div>
                             <PartyPopper className="size-[24px] text-white" />
@@ -63,7 +68,7 @@ export default function Sidebar() {
                     </div>
                 </div>
                 <div className={`py-[8px] px-[16px] hover:bg-[#1d1d1d] rounded-[8px] ${isSidebarClosed ? "flex flex-col" : ""} ${currentTab === "settings" ? "bg-[#1d1d1d]" : ""}`}
-                    onClick={() => navigate("/dashboard/settings/profile")}>
+                    onClick={() => navigate("/dashboard/edu/settings")}>
                     <div className="flex gap-[8px] cursor-pointer items-center">
                         <div>
                             <Settings className="size-[24px] text-white" />
