@@ -48,15 +48,6 @@ export default function Sidebar() {
                 </div>
             </div>
             <div className="flex flex-col">
-                <div className={`py-[8px] px-[16px] hover:bg-[#1d1d1d] rounded-[8px] ${isSidebarClosed ? "flex flex-col" : ""} ${currentTab === "new" ? "bg-[#1d1d1d]" : ""}`}
-                    onClick={() => navigate("/dashboard/edu/new")}>
-                    <div className="flex gap-[8px] cursor-pointer items-center mb-[4px]">
-                        <div>
-                            <PartyPopper className="size-[24px] text-white" />
-                        </div>
-                        <div className={`${isSidebarClosed ? "text-[10px]" : "text-[14px]"} font-medium`}>What's New</div>
-                    </div>
-                </div>
                 <div className={`py-[8px] px-[16px] hover:bg-[#1d1d1d] rounded-[8px] ${isSidebarClosed ? "flex flex-col" : ""} ${currentTab === "settings" ? "bg-[#1d1d1d]" : ""}`}
                     onClick={() => navigate("/dashboard/edu/settings")}>
                     <div className="flex gap-[8px] cursor-pointer items-center">

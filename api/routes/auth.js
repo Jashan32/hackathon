@@ -171,4 +171,127 @@ router.get('/students', async (req, res) => {
     }
 });
 
+// Get current user profile
+router.get('/me', authenticateToken, async (req, res) => {
+    try {
+        const user = await User.findById(req.user.userId).select('-password');
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        res.json({
+            success: true,
+            user: user
+        });
+    } catch (error) {
+        console.error('Get profile error:', error);
+        res.status(500).json({ error: 'Failed to fetch profile' });
+    }
+});
+
+// Update user profile
+router.put('/update-profile', authenticateToken, async (req, res) => {
+    try {
+        const {
+            firstName,
+            lastName,
+            email,
+            bio,
+            profilePicture
+        } = req.body;
+
+        // Check if email is already taken by another user
+        if (email) {
+            const existingUser = await User.findOne({ 
+                email: email, 
+                _id: { $ne: req.user.userId } 
+            });
+            if (existingUser) {
+                return res.status(400).json({ error: 'Email is already in use' });
+            }
+        }
+
+        // Prepare update object
+        const updateData = {
+            updatedAt: new Date()
+        };
+
+        if (firstName) updateData.firstName = firstName;
+        if (lastName) updateData.lastName = lastName;
+        if (email) updateData.email = email;
+        if (bio !== undefined) updateData.bio = bio;
+        if (profilePicture !== undefined) updateData.profilePicture = profilePicture;
+
+        const updatedUser = await User.findByIdAndUpdate(
+            req.user.userId,
+            updateData,
+            { new: true, runValidators: true }
+        ).select('-password');
+
+        if (!updatedUser) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        res.json({
+            success: true,
+            message: 'Profile updated successfully',
+            user: updatedUser
+        });
+    } catch (error) {
+        console.error('Update profile error:', error);
+        if (error.name === 'ValidationError') {
+            return res.status(400).json({ error: error.message });
+        }
+        res.status(500).json({ error: 'Failed to update profile' });
+    }
+});
+
+// Change password
+router.put('/change-password', authenticateToken, async (req, res) => {
+    try {
+        const { currentPassword, newPassword } = req.body;
+
+        if (!currentPassword || !newPassword) {
+            return res.status(400).json({ error: 'Current password and new password are required' });
+        }
+
+        if (newPassword.length < 6) {
+            return res.status(400).json({ error: 'New password must be at least 6 characters long' });
+        }
+
+        // Get user with password
+        const user = await User.findById(req.user.userId);
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Verify current password
+        const isCurrentPasswordValid = await bcrypt.compare(currentPassword, user.password);
+        if (!isCurrentPasswordValid) {
+            return res.status(400).json({ error: 'Current password is incorrect' });
+        }
+
+        // Hash new password
+        const saltRounds = 10;
+        const hashedNewPassword = await bcrypt.hash(newPassword, saltRounds);
+
+        // Update password
+        await User.findByIdAndUpdate(
+            req.user.userId,
+            { 
+                password: hashedNewPassword,
+                updatedAt: new Date()
+            }
+        );
+
+        res.json({
+            success: true,
+            message: 'Password updated successfully'
+        });
+    } catch (error) {
+        console.error('Change password error:', error);
+        res.status(500).json({ error: 'Failed to change password' });
+    }
+});
+
 export default router;
