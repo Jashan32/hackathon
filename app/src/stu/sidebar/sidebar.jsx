@@ -37,9 +37,9 @@ export default function StuSidebar() {
                             <div className={`${isSidebarClosed ? "text-[10px]" : "text-[14px]"} font-medium`}>Courses</div>
                         </div>
                         <div className={`${isSidebarClosed ? "flex flex-col" : ""} ${currentTab === "schedule" ? "bg-[#1d1d1d]" : ""}`}
-                            onClick={() => navigate("/dashboard/edu/tas")}>
+                            onClick={() => navigate("/dashboard/stu/enrolled")}>
                             <GraduationCap className="size-[24px] text-white" />
-                            <div className={`${isSidebarClosed ? "text-[10px]" : "text-[14px]"} font-medium`}>TAs</div>
+                            <div className={`${isSidebarClosed ? "text-[10px]" : "text-[14px]"} font-medium`}>Enrolled</div>
                         </div>
                     </div>
                     <div>
