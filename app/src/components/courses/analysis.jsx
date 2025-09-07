@@ -169,7 +169,7 @@ export default function CourseAnalysis() {
                             </div>
                             <span className="text-[#888888] text-[14px]">{course.category}</span>
                             <span className="text-[#888888] text-[14px] capitalize">{course.difficulty}</span>
-                            <span className="text-[#e43b58] text-[16px] font-semibold">${course.price}</span>
+                            <span className="text-[#e43b58] text-[16px] font-semibold">₹{course.price}</span>
                         </div>
                     </div>
                 </div>
@@ -200,12 +200,12 @@ export default function CourseAnalysis() {
                         </div>
                         <div>
                             <p className="text-[#888888] text-[12px]">Total Revenue</p>
-                            <p className="text-white text-[24px] font-semibold">${analyticsData.totalRevenue.toLocaleString()}</p>
+                            <p className="text-white text-[24px] font-semibold">₹{analyticsData.totalRevenue.toLocaleString()}</p>
                         </div>
                     </div>
                     <div className="flex items-center gap-[4px]">
                         <TrendingUp className="size-[12px] text-green-500" />
-                        <span className="text-green-500 text-[12px]">+${(course.price * 3).toLocaleString()} this month</span>
+                        <span className="text-green-500 text-[12px]">+₹{(course.price * 3).toLocaleString()} this month</span>
                     </div>
                 </div>
 

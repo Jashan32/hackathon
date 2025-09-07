@@ -114,7 +114,7 @@ export default function Courses(){
                         <div>
                             <p className="text-[#888888] text-[14px]">Revenue</p>
                             <p className="text-white text-[24px] font-semibold">
-                                ${courses.reduce((total, course) => total + (course.price * course.enrolledStudents.length), 0)}
+                                ₹{courses.reduce((total, course) => total + (course.price * course.enrolledStudents.length), 0)}
                             </p>
                         </div>
                     </div>
@@ -226,7 +226,7 @@ export default function Courses(){
                                         <div className="text-[#888888] text-[12px]">•</div>
                                         <span className="text-[#888888] text-[12px] capitalize">{course.difficulty}</span>
                                     </div>
-                                    <span className="text-[#e43b58] text-[16px] font-semibold">${course.price}</span>
+                                    <span className="text-[#e43b58] text-[16px] font-semibold">₹{course.price}</span>
                                 </div>
 
                                 {/* Category */}

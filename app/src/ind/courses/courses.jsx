@@ -124,7 +124,7 @@ export default function IndCourses() {
     };
 
     const formatPrice = (price) => {
-        return price === 0 ? 'Free' : `$${price}`;
+        return price === 0 ? 'Free' : `₹${price}`;
     };
 
     const handleViewCourse = (courseId) => {

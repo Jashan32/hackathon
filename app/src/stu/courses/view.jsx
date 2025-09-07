@@ -567,7 +567,7 @@ export default function ViewCourse() {
                     {/* Enrollment Card */}
                     <div className="bg-[#1d1d1d] border border-white/10 rounded-[12px] p-[24px]">
                         <div className="text-center mb-[20px]">
-                            <div className="text-white text-[32px] font-bold mb-[4px]">${course.price}</div>
+                            <div className="text-white text-[32px] font-bold mb-[4px]">₹{course.price}</div>
                             <p className="text-[#888888] text-[14px]">One-time payment</p>
                         </div>
 

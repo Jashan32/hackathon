@@ -160,7 +160,7 @@ export default function EditCourse() {
         } else if (isNaN(formData.price) || parseFloat(formData.price) < 0) {
             newErrors.price = 'Please enter a valid price';
         } else if (parseFloat(formData.price) > 999999) {
-            newErrors.price = 'Price cannot exceed $999,999';
+            newErrors.price = 'Price cannot exceed ₹999,999';
         }
 
         setErrors(newErrors);
@@ -398,10 +398,10 @@ export default function EditCourse() {
                             {/* Price */}
                             <div>
                                 <label className="block text-white text-[14px] font-medium mb-[8px]">
-                                    Course Price (USD) *
+                                    Course Price (INR) *
                                 </label>
                                 <div className="relative">
-                                    <span className="absolute left-[16px] top-1/2 transform -translate-y-1/2 text-[#888888] text-[16px]">$</span>
+                                    <span className="absolute left-[16px] top-1/2 transform -translate-y-1/2 text-[#888888] text-[16px]">₹</span>
                                     <input
                                         type="number"
                                         name="price"
@@ -488,8 +488,8 @@ export default function EditCourse() {
                                 {parseFloat(formData.price) !== originalData.price && (
                                     <div>
                                         <p className="text-[#888888] mb-[4px]">Price:</p>
-                                        <p className="text-red-400 mb-[2px]">- ${originalData.price}</p>
-                                        <p className="text-green-400">+ ${formData.price}</p>
+                                        <p className="text-red-400 mb-[2px]">- ₹{originalData.price}</p>
+                                        <p className="text-green-400">+ ₹{formData.price}</p>
                                     </div>
                                 )}
                                 {formData.category !== originalData.category && (

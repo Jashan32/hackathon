@@ -222,7 +222,7 @@ function OverviewTab({ course }) {
                         </div>
                         <div>
                             <label className="text-[#888888] text-[12px] block mb-[4px]">Price</label>
-                            <p className="text-white text-[14px]">${course.price}</p>
+                            <p className="text-white text-[14px]">₹{course.price}</p>
                         </div>
                         <div>
                             <label className="text-[#888888] text-[12px] block mb-[4px]">Students</label>
@@ -264,7 +264,7 @@ function OverviewTab({ course }) {
                     <div className="space-y-[12px]">
                         <div className="flex justify-between">
                             <span className="text-[#888888] text-[14px]">Revenue</span>
-                            <span className="text-white text-[14px] font-medium">${(course.price * course.enrolledStudents.length).toLocaleString()}</span>
+                            <span className="text-white text-[14px] font-medium">₹{(course.price * course.enrolledStudents.length).toLocaleString()}</span>
                         </div>
                         <div className="flex justify-between">
                             <span className="text-[#888888] text-[14px]">Avg Rating</span>
@@ -798,7 +798,7 @@ function AnalyticsTab({ course }) {
                         <div>
                             <p className="text-[#888888] text-[12px]">Total Revenue</p>
                             <p className="text-white text-[24px] font-semibold">
-                                ${((course.enrolledStudents?.length || 0) * course.price).toLocaleString()}
+                                ₹{((course.enrolledStudents?.length || 0) * course.price).toLocaleString()}
                             </p>
                         </div>
                         <BarChart3 className="size-[32px] text-green-500" />
@@ -971,7 +971,7 @@ function SettingsTab({ course, onUpdate }) {
                 </div>
 
                 <div className="bg-[#1d1d1d] border border-white/10 rounded-[12px] p-[24px]">
-                    <label className="block text-white text-[14px] font-medium mb-[8px]">Price (USD)</label>
+                    <label className="block text-white text-[14px] font-medium mb-[8px]">Price (INR)</label>
                     <input
                         type="number"
                         name="price"

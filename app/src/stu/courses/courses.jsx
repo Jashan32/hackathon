@@ -13,7 +13,6 @@ import {
     Award,
     PlayCircle,
     User,
-    DollarSign,
     ChevronDown,
     Heart,
     Share2,
@@ -391,7 +390,7 @@ function CourseCard({ course, viewMode, isEnrolled, onEnroll, onViewCourse, getD
 
                             <div className="flex items-center gap-[12px]">
                                 <div className="text-right">
-                                    <p className="text-white text-[18px] font-semibold">${course.price}</p>
+                                    <p className="text-white text-[18px] font-semibold">₹{course.price}</p>
                                 </div>
                                 <button
                                     onClick={onViewCourse}
@@ -484,7 +483,7 @@ function CourseCard({ course, viewMode, isEnrolled, onEnroll, onViewCourse, getD
                     </button>
                     <div className="flex items-center justify-between">
                         <div className="text-white text-[20px] font-semibold">
-                            ${course.price}
+                            ₹{course.price}
                         </div>
                         <button
                             onClick={onEnroll}

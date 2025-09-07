@@ -308,10 +308,10 @@ export default function CreateCourse() {
                             {/* Price */}
                             <div>
                                 <label className="block text-white text-[14px] font-medium mb-[8px]">
-                                    Course Price (USD) *
+                                    Course Price (INR) *
                                 </label>
                                 <div className="relative">
-                                    <span className="absolute left-[16px] top-1/2 transform -translate-y-1/2 text-[#888888] text-[16px]">$</span>
+                                    <span className="absolute left-[16px] top-1/2 transform -translate-y-1/2 text-[#888888] text-[16px]">₹</span>
                                     <input
                                         type="number"
                                         name="price"
