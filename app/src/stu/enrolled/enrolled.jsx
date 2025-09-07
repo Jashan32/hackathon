@@ -177,7 +177,7 @@ export default function Enrolled() {
                 <div className="flex items-center gap-[12px]">
                     <button
                         onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
-                        className="w-[40px] h-[40px] bg-[#1d1d1d] hover:bg-[#383838] border border-white/10 rounded-[8px] flex items-center justify-center transition-colors"
+                        className="w-[40px] h-[40px] bg-[#1d1d1d] hover:bg-[#383838] border border-white/10 rounded-[8px] flex items-center justify-center transition-colors cursor-pointer"
                     >
                         {viewMode === 'grid' ? 
                             <List className="size-[20px] text-white" /> : 
@@ -339,7 +339,7 @@ export default function Enrolled() {
                     </p>
                     <button 
                         onClick={() => navigate('/dashboard/stu/courses')}
-                        className="bg-[#e43b58] hover:bg-[#c73650] text-white px-[24px] py-[12px] rounded-[8px] transition-colors"
+                        className="bg-[#e43b58] hover:bg-[#c73650] text-white px-[24px] py-[12px] rounded-[8px] transition-colors cursor-pointer"
                     >
                         Browse Courses
                     </button>
@@ -357,7 +357,7 @@ export default function Enrolled() {
                             setSelectedCategory('all');
                             setProgressFilter('all');
                         }}
-                        className="bg-[#e43b58] hover:bg-[#c73650] text-white px-[20px] py-[12px] rounded-[8px] transition-colors"
+                        className="bg-[#e43b58] hover:bg-[#c73650] text-white px-[20px] py-[12px] rounded-[8px] transition-colors cursor-pointer"
                     >
                         Clear Filters
                     </button>
@@ -446,14 +446,14 @@ function EnrolledCourseCard({ course, viewMode, navigate, getProgressStatus, get
                                 {course.certificateEarned && (
                                     <button
                                         onClick={handleViewCertificate}
-                                        className="bg-yellow-500/20 text-yellow-400 px-[12px] py-[6px] rounded-[6px] text-[12px] hover:bg-yellow-500/30 transition-colors"
+                                        className="bg-yellow-500/20 text-yellow-400 px-[12px] py-[6px] rounded-[6px] text-[12px] hover:bg-yellow-500/30 transition-colors cursor-pointer"
                                     >
                                         View Certificate
                                     </button>
                                 )}
                                 <button
                                     onClick={handleContinueLearning}
-                                    className="bg-[#e43b58] hover:bg-[#c73650] text-white px-[16px] py-[8px] rounded-[6px] text-[14px] transition-colors"
+                                    className="bg-[#e43b58] hover:bg-[#c73650] text-white px-[16px] py-[8px] rounded-[6px] text-[14px] transition-colors cursor-pointer"
                                 >
                                     {course.progress === 0 ? 'Start Learning' : 'Continue Learning'}
                                 </button>
@@ -524,14 +524,14 @@ function EnrolledCourseCard({ course, viewMode, navigate, getProgressStatus, get
                     {course.certificateEarned && (
                         <button
                             onClick={handleViewCertificate}
-                            className="flex-1 bg-yellow-500/20 text-yellow-400 py-[8px] rounded-[6px] text-[12px] hover:bg-yellow-500/30 transition-colors"
+                            className="flex-1 bg-yellow-500/20 text-yellow-400 py-[8px] rounded-[6px] text-[12px] hover:bg-yellow-500/30 transition-colors cursor-pointer"
                         >
                             Certificate
                         </button>
                     )}
                     <button
                         onClick={handleContinueLearning}
-                        className={`${course.certificateEarned ? 'flex-1' : 'w-full'} bg-[#e43b58] hover:bg-[#c73650] text-white py-[8px] rounded-[6px] text-[14px] transition-colors`}
+                        className={`${course.certificateEarned ? 'flex-1' : 'w-full'} bg-[#e43b58] hover:bg-[#c73650] text-white py-[8px] rounded-[6px] text-[14px] transition-colors cursor-pointer`}
                     >
                         {course.progress === 0 ? 'Start' : 'Continue'}
                     </button>

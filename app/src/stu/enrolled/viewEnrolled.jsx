@@ -325,21 +325,21 @@ export default function ViewEnrolled() {
                 <div className="flex flex-wrap gap-[12px]">
                     <button
                         onClick={continueFromLastPoint}
-                        className="flex items-center gap-[8px] bg-[#e43b58] hover:bg-[#c73650] text-white px-[20px] py-[12px] rounded-[8px] transition-colors"
+                        className="flex items-center gap-[8px] bg-[#e43b58] hover:bg-[#c73650] text-white px-[20px] py-[12px] rounded-[8px] transition-colors cursor-pointer"
                     >
                         <Play className="size-[16px]" />
                         Continue Learning
                     </button>
                     <button
                         onClick={() => setActiveTab('curriculum')}
-                        className="flex items-center gap-[8px] bg-[#383838] hover:bg-[#4a4a4a] text-white px-[20px] py-[12px] rounded-[8px] transition-colors"
+                        className="flex items-center gap-[8px] bg-[#383838] hover:bg-[#4a4a4a] text-white px-[20px] py-[12px] rounded-[8px] transition-colors cursor-pointer"
                     >
                         <BookOpen className="size-[16px]" />
                         View Curriculum
                     </button>
                     <button
                         onClick={() => setActiveTab('progress')}
-                        className="flex items-center gap-[8px] bg-[#383838] hover:bg-[#4a4a4a] text-white px-[20px] py-[12px] rounded-[8px] transition-colors"
+                        className="flex items-center gap-[8px] bg-[#383838] hover:bg-[#4a4a4a] text-white px-[20px] py-[12px] rounded-[8px] transition-colors cursor-pointer"
                     >
                         <BarChart3 className="size-[16px]" />
                         Track Progress
@@ -409,7 +409,7 @@ export default function ViewEnrolled() {
                     {course.curriculum.length > 3 && (
                         <button
                             onClick={() => setActiveTab('curriculum')}
-                            className="w-full text-[#e43b58] text-[14px] font-medium hover:text-[#c73650] transition-colors text-center py-[8px]"
+                            className="w-full text-[#e43b58] text-[14px] font-medium hover:text-[#c73650] transition-colors text-center py-[8px] cursor-pointer"
                         >
                             View all {course.curriculum.length} sections →
                         </button>
@@ -572,7 +572,7 @@ export default function ViewEnrolled() {
                                                     className={`w-[40px] h-[40px] rounded-[8px] flex items-center justify-center transition-colors ${
                                                         isLocked
                                                             ? 'bg-[#383838] cursor-not-allowed'
-                                                            : 'bg-[#e43b58] hover:bg-[#c73650]'
+                                                            : 'bg-[#e43b58] hover:bg-[#c73650] cursor-pointer'
                                                     }`}
                                                 >
                                                     <PlayCircle className={`size-[20px] ${isLocked ? 'text-[#888888]' : 'text-white'}`} />
@@ -730,7 +730,7 @@ export default function ViewEnrolled() {
                                 <Twitter className="size-[16px] text-[#888888]" />
                             </a>
                         )}
-                        <button className="w-[36px] h-[36px] bg-[#383838] hover:bg-[#4a4a4a] rounded-[8px] flex items-center justify-center transition-colors">
+                        <button className="w-[36px] h-[36px] bg-[#383838] hover:bg-[#4a4a4a] rounded-[8px] flex items-center justify-center transition-colors cursor-pointer">
                             <MessageSquare className="size-[16px] text-[#888888]" />
                         </button>
                     </div>
@@ -765,7 +765,7 @@ export default function ViewEnrolled() {
                     <p className="text-[#888888] mb-[16px]">The course you're looking for doesn't exist or you don't have access.</p>
                     <button
                         onClick={() => navigate('/dashboard/stu/enrolled')}
-                        className="bg-[#e43b58] hover:bg-[#c73650] text-white px-[20px] py-[10px] rounded-[8px] transition-colors"
+                        className="bg-[#e43b58] hover:bg-[#c73650] text-white px-[20px] py-[10px] rounded-[8px] transition-colors cursor-pointer"
                     >
                         Back to Enrolled Courses
                     </button>
@@ -781,7 +781,7 @@ export default function ViewEnrolled() {
                 <div className="flex items-center gap-[16px] mb-[24px]">
                     <button
                         onClick={() => navigate('/dashboard/stu/enrolled')}
-                        className="w-[40px] h-[40px] bg-[#1d1d1d] hover:bg-[#383838] border border-white/10 rounded-[8px] flex items-center justify-center transition-colors"
+                        className="w-[40px] h-[40px] bg-[#1d1d1d] hover:bg-[#383838] border border-white/10 rounded-[8px] flex items-center justify-center transition-colors cursor-pointer"
                     >
                         <ArrowLeft className="size-[20px] text-white" />
                     </button>
@@ -794,13 +794,13 @@ export default function ViewEnrolled() {
                     <div className="flex items-center gap-[12px]">
                         <button
                             onClick={() => setBookmarked(!bookmarked)}
-                            className={`w-[40px] h-[40px] rounded-[8px] flex items-center justify-center transition-colors ${
+                            className={`w-[40px] h-[40px] rounded-[8px] flex items-center justify-center transition-colors cursor-pointer ${
                                 bookmarked ? 'bg-[#e43b58] text-white' : 'bg-[#1d1d1d] border border-white/10 text-[#888888] hover:text-white'
                             }`}
                         >
                             <Bookmark className="size-[18px]" />
                         </button>
-                        <button className="w-[40px] h-[40px] bg-[#1d1d1d] border border-white/10 hover:bg-[#383838] rounded-[8px] flex items-center justify-center transition-colors">
+                        <button className="w-[40px] h-[40px] bg-[#1d1d1d] border border-white/10 hover:bg-[#383838] rounded-[8px] flex items-center justify-center transition-colors cursor-pointer">
                             <Share2 className="size-[18px] text-[#888888]" />
                         </button>
                     </div>
@@ -859,7 +859,7 @@ export default function ViewEnrolled() {
                             </div>
                             <button
                                 onClick={continueFromLastPoint}
-                                className="bg-[#e43b58] hover:bg-[#c73650] text-white px-[20px] py-[12px] rounded-[8px] transition-colors flex items-center gap-[8px]"
+                                className="bg-[#e43b58] hover:bg-[#c73650] text-white px-[20px] py-[12px] rounded-[8px] transition-colors flex items-center gap-[8px] cursor-pointer"
                             >
                                 <Play className="size-[16px]" />
                                 Continue Learning
@@ -876,7 +876,7 @@ export default function ViewEnrolled() {
                             <button
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}
-                                className={`flex items-center gap-[8px] px-[20px] py-[12px] text-[14px] font-medium transition-colors border-b-2 ${
+                                className={`flex items-center gap-[8px] px-[20px] py-[12px] text-[14px] font-medium transition-colors border-b-2 cursor-pointer ${
                                     activeTab === tab.id
                                         ? 'text-[#e43b58] border-[#e43b58]'
                                         : 'text-[#888888] border-transparent hover:text-white'

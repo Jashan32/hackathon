@@ -3,13 +3,23 @@ import { useState } from "react";
 import projectsSVG from "../../../assets/projects.svg";
 import homeSVG from "../../../assets/home.svg";
 import scheduleSVG from "../../../assets/schedule.svg";
-import { GraduationCap, PanelLeftClose, PanelRightOpen, PartyPopper, Settings, UserStar } from 'lucide-react';
+import { GraduationCap, LogOut, PanelLeftClose, PanelRightOpen, PartyPopper, Settings, UserStar } from 'lucide-react';
 import { useLocation } from "react-router-dom";
 
 export default function Sidebar() {
     const navigate = useNavigate();
     const [isSidebarClosed, setIsSidebarClosed] = useState(localStorage.getItem('isSidebarClosed') == 'true');
     const profilePicUrl = localStorage.getItem('profilePic') || '';
+    const location = useLocation();
+    
+    const handleLogout = () => {
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('userRole');
+        localStorage.removeItem('userId');
+        localStorage.removeItem('profilePic');
+        navigate('/auth');
+    };
+    
     // const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('isLoggedIn') == 'true');
     // if (!isLoggedIn) {
     //     navigate("/login")
@@ -24,7 +34,7 @@ export default function Sidebar() {
             <div className={` text-white flex flex-col gap-[12px] transition-all duration-300 ${isSidebarClosed ? " w-[68px] min-w-[68px]" : "min-w-[232px] w-[232px]"} h-[100vh] `}>
                 <div className={`text-lg font-bold h-[40px] flex items-center ${isSidebarClosed ? "justify-center ml-[0px]" : "justify-between ml-[12px]"}`}>
                     {!isSidebarClosed && <div>SkillNest</div>}
-                    <div className="flex hover:bg-[#1d1d1d] rounded-[8px] " onClick={() => { setIsSidebarClosed(!isSidebarClosed); localStorage.setItem('isSidebarClosed', `${!isSidebarClosed}`) }}>
+                    <div className="flex hover:bg-[#1d1d1d] rounded-[8px] cursor-pointer" onClick={() => { setIsSidebarClosed(!isSidebarClosed); localStorage.setItem('isSidebarClosed', `${!isSidebarClosed}`) }}>
                         {isSidebarClosed ? <PanelRightOpen className="size-[32px] p-[6px] text-[#888888] hover:text-white cursor-pointer rotate-180" /> :
                             <PanelLeftClose className="size-[32px] p-[6px] text-[#888888] hover:text-white cursor-pointer" />}
                     </div>
@@ -50,11 +60,20 @@ export default function Sidebar() {
             <div className="flex flex-col">
                 <div className={`py-[8px] px-[16px] hover:bg-[#1d1d1d] rounded-[8px] ${isSidebarClosed ? "flex flex-col" : ""} ${currentTab === "settings" ? "bg-[#1d1d1d]" : ""}`}
                     onClick={() => navigate("/dashboard/edu/settings")}>
-                    <div className="flex gap-[8px] cursor-pointer items-center">
+                    <div className={`${isSidebarClosed ? "flex flex-col" : "flex gap-[8px]"} cursor-pointer items-center`}>
                         <div>
                             <Settings className="size-[24px] text-white" />
                         </div>
-                        <div className={`${isSidebarClosed ? "text-[10px]" : "text-[14px]"} font-medium`}>Settings</div>
+                        <div className={`text-white ${isSidebarClosed ? "text-[10px]" : "text-[14px]"} font-medium`}>Settings</div>
+                    </div>
+                </div>
+                <div className={`py-[8px] px-[16px] hover:bg-[#1d1d1d] rounded-[8px] ${isSidebarClosed ? "flex flex-col" : ""}`}
+                    onClick={handleLogout}>
+                    <div className={`${isSidebarClosed ? "flex flex-col" : "flex gap-[8px]"} cursor-pointer items-center`}>
+                        <div>
+                            <LogOut className="size-[24px] text-red-400" />
+                        </div>
+                        <div className={`text-red-400 ${isSidebarClosed ? "text-[10px]" : "text-[14px]"} font-medium`}>Log Out</div>
                     </div>
                 </div>
             </div>

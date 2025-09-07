@@ -1,15 +1,16 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import StuSidebar from "../sidebar/sidebar";
 import StuNavbar from "../navbar";
 
 export default function StuDashboardLayout() {
   const [searchCardVisible, setSearchCardVisible] = useState(false);
-//   const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem("isLoggedIn") === "true");
-//   useEffect(() => {
-//     if (localStorage.getItem("isLoggedIn") === "false") {
-//     }
-//   }, []);
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (localStorage.getItem("isLoggedIn") === "false") {
+      navigate("/auth");
+    }
+  }, []);
 
   return (
     <div className="relative bg-[#0d0d0d] flex h-[100vh] overflow-hidden p-2 pl-0 pt-0 w-full">

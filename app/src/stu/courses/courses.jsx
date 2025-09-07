@@ -173,7 +173,7 @@ export default function StuCourses() {
                 <div className="flex items-center gap-[12px]">
                     <button
                         onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
-                        className="w-[40px] h-[40px] bg-[#1d1d1d] hover:bg-[#383838] border border-white/10 rounded-[8px] flex items-center justify-center transition-colors"
+                        className="w-[40px] h-[40px] bg-[#1d1d1d] hover:bg-[#383838] border border-white/10 rounded-[8px] flex items-center justify-center transition-colors cursor-pointer"
                     >
                         {viewMode === 'grid' ? 
                             <List className="size-[20px] text-white" /> : 
@@ -182,7 +182,7 @@ export default function StuCourses() {
                     </button>
                     <button
                         onClick={() => setShowFilters(!showFilters)}
-                        className="flex items-center gap-[8px] bg-[#1d1d1d] hover:bg-[#383838] border border-white/10 text-white px-[16px] py-[12px] rounded-[8px] transition-colors"
+                        className="flex items-center gap-[8px] bg-[#1d1d1d] hover:bg-[#383838] border border-white/10 text-white px-[16px] py-[12px] rounded-[8px] transition-colors cursor-pointer"
                     >
                         <Filter className="size-[16px]" />
                         Filters

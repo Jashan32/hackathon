@@ -1,1 +1,25 @@
 @import "tailwindcss";
+
+/* Global cursor pointer for clickable elements */
+button {
+  cursor: pointer;
+}
+
+/* Ensure disabled buttons have correct cursor */
+button:disabled {
+  cursor: not-allowed;
+}
+
+/* For other commonly clickable elements */
+a {
+  cursor: pointer;
+}
+
+label[for] {
+  cursor: pointer;
+}
+
+/* Utility class for clickable divs */
+.clickable {
+  cursor: pointer;
+}

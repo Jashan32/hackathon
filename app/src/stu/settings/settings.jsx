@@ -429,7 +429,7 @@ export default function StuSettings() {
                     <div className="bg-[#1d1d1d] border border-white/10 rounded-[12px] p-[8px]">
                         <button
                             onClick={() => setActiveTab('profile')}
-                            className={`w-full flex items-center gap-[12px] px-[16px] py-[12px] rounded-[8px] text-left transition-colors ${
+                            className={`w-full flex items-center gap-[12px] px-[16px] py-[12px] rounded-[8px] text-left transition-colors cursor-pointer ${
                                 activeTab === 'profile' 
                                     ? 'bg-[#e43b58] text-white' 
                                     : 'text-[#888888] hover:text-white hover:bg-[#383838]'
@@ -440,7 +440,7 @@ export default function StuSettings() {
                         </button>
                         <button
                             onClick={() => setActiveTab('password')}
-                            className={`w-full flex items-center gap-[12px] px-[16px] py-[12px] rounded-[8px] text-left transition-colors ${
+                            className={`w-full flex items-center gap-[12px] px-[16px] py-[12px] rounded-[8px] text-left transition-colors cursor-pointer ${
                                 activeTab === 'password' 
                                     ? 'bg-[#e43b58] text-white' 
                                     : 'text-[#888888] hover:text-white hover:bg-[#383838]'
@@ -451,7 +451,7 @@ export default function StuSettings() {
                         </button>
                         <button
                             onClick={() => setActiveTab('preferences')}
-                            className={`w-full flex items-center gap-[12px] px-[16px] py-[12px] rounded-[8px] text-left transition-colors ${
+                            className={`w-full flex items-center gap-[12px] px-[16px] py-[12px] rounded-[8px] text-left transition-colors cursor-pointer ${
                                 activeTab === 'preferences' 
                                     ? 'bg-[#e43b58] text-white' 
                                     : 'text-[#888888] hover:text-white hover:bg-[#383838]'
@@ -607,7 +607,7 @@ export default function StuSettings() {
                                     <button
                                         onClick={handleSaveProfile}
                                         disabled={saving}
-                                        className="flex items-center gap-[8px] bg-[#e43b58] hover:bg-[#c73650] disabled:opacity-50 disabled:cursor-not-allowed text-white px-[24px] py-[12px] rounded-[8px] transition-colors"
+                                        className="flex items-center gap-[8px] bg-[#e43b58] hover:bg-[#c73650] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-white px-[24px] py-[12px] rounded-[8px] transition-colors"
                                     >
                                         {saving ? (
                                             <div className="w-[16px] h-[16px] border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
@@ -643,7 +643,7 @@ export default function StuSettings() {
                                         <button
                                             type="button"
                                             onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                                            className="absolute right-[16px] top-1/2 transform -translate-y-1/2 text-[#888888] hover:text-white transition-colors"
+                                            className="absolute right-[16px] top-1/2 transform -translate-y-1/2 text-[#888888] hover:text-white transition-colors cursor-pointer"
                                         >
                                             {showCurrentPassword ? <EyeOff className="size-[18px]" /> : <Eye className="size-[18px]" />}
                                         </button>
@@ -668,7 +668,7 @@ export default function StuSettings() {
                                         <button
                                             type="button"
                                             onClick={() => setShowNewPassword(!showNewPassword)}
-                                            className="absolute right-[16px] top-1/2 transform -translate-y-1/2 text-[#888888] hover:text-white transition-colors"
+                                            className="absolute right-[16px] top-1/2 transform -translate-y-1/2 text-[#888888] hover:text-white transition-colors cursor-pointer"
                                         >
                                             {showNewPassword ? <EyeOff className="size-[18px]" /> : <Eye className="size-[18px]" />}
                                         </button>
@@ -693,7 +693,7 @@ export default function StuSettings() {
                                         <button
                                             type="button"
                                             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                            className="absolute right-[16px] top-1/2 transform -translate-y-1/2 text-[#888888] hover:text-white transition-colors"
+                                            className="absolute right-[16px] top-1/2 transform -translate-y-1/2 text-[#888888] hover:text-white transition-colors cursor-pointer"
                                         >
                                             {showConfirmPassword ? <EyeOff className="size-[18px]" /> : <Eye className="size-[18px]" />}
                                         </button>
@@ -714,7 +714,7 @@ export default function StuSettings() {
                                     <button
                                         onClick={handleChangePassword}
                                         disabled={saving}
-                                        className="flex items-center gap-[8px] bg-[#e43b58] hover:bg-[#c73650] disabled:opacity-50 disabled:cursor-not-allowed text-white px-[24px] py-[12px] rounded-[8px] transition-colors"
+                                        className="flex items-center gap-[8px] bg-[#e43b58] hover:bg-[#c73650] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-white px-[24px] py-[12px] rounded-[8px] transition-colors"
                                     >
                                         {saving ? (
                                             <div className="w-[16px] h-[16px] border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
@@ -882,14 +882,14 @@ export default function StuSettings() {
                                 <div className="flex justify-between items-center mt-[24px]">
                                     <button
                                         onClick={handleResetPreferences}
-                                        className="flex items-center gap-[8px] bg-[#383838] hover:bg-[#4a4a4a] text-white px-[20px] py-[12px] rounded-[8px] transition-colors"
+                                        className="flex items-center gap-[8px] bg-[#383838] hover:bg-[#4a4a4a] text-white px-[20px] py-[12px] rounded-[8px] transition-colors cursor-pointer"
                                     >
                                         Reset to Default
                                     </button>
                                     <button
                                         onClick={handleSavePreferences}
                                         disabled={saving}
-                                        className="flex items-center gap-[8px] bg-[#e43b58] hover:bg-[#c73650] disabled:opacity-50 disabled:cursor-not-allowed text-white px-[24px] py-[12px] rounded-[8px] transition-colors"
+                                        className="flex items-center gap-[8px] bg-[#e43b58] hover:bg-[#c73650] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-white px-[24px] py-[12px] rounded-[8px] transition-colors"
                                     >
                                         {saving ? (
                                             <div className="w-[16px] h-[16px] border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
