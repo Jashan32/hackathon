@@ -55,7 +55,7 @@ export default function IndSettings() {
 
     const fetchUserProfile = async () => {
         try {
-            const response = await fetch('http://localhost:3000/api/auth/me', {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api/auth/me`, {
                 headers: {
                     'authorization': localStorage.getItem('token')
                 }
@@ -82,7 +82,7 @@ export default function IndSettings() {
 
     const fetchPreferences = async () => {
         try {
-            const response = await fetch('http://localhost:3000/api/auth/preferences', {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api/auth/preferences`, {
                 headers: {
                     'authorization': localStorage.getItem('token')
                 }
@@ -106,7 +106,7 @@ export default function IndSettings() {
         setSuccessMessage('');
 
         try {
-            const response = await fetch('http://localhost:3000/api/auth/update-profile', {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api/auth/update-profile`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -142,7 +142,7 @@ export default function IndSettings() {
         }
 
         try {
-            const response = await fetch('http://localhost:3000/api/auth/change-password', {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api/auth/change-password`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -176,7 +176,7 @@ export default function IndSettings() {
         setSuccessMessage('');
 
         try {
-            const response = await fetch('http://localhost:3000/api/auth/update-preferences', {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api/auth/update-preferences`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

@@ -93,7 +93,7 @@ export default function IndViewCourse() {
     const fetchCourse = async () => {
         try {
             setLoading(true);
-            const response = await fetch(`http://localhost:3000/api/courses/${courseId}`);
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api/courses/${courseId}`);
             if (response.ok) {
                 const data = await response.json();
                 setCourse({
@@ -130,7 +130,7 @@ export default function IndViewCourse() {
 
     const fetchExistingRating = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/courses/${courseId}/industry-rating`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api/courses/${courseId}/industry-rating`, {
                 headers: {
                     'authorization': localStorage.getItem('token')
                 }
@@ -164,7 +164,7 @@ export default function IndViewCourse() {
     const saveRating = async () => {
         try {
             setSavingRating(true);
-            const response = await fetch(`http://localhost:3000/api/courses/${courseId}/industry-rating`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api/courses/${courseId}/industry-rating`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

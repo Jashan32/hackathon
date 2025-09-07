@@ -37,7 +37,7 @@ export default function ManageCourse() {
 
     const fetchCourse = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/courses/${courseId}`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api/courses/${courseId}`, {
                 headers: {
                     'authorization': localStorage.getItem('token'),
                     'Content-Type': 'application/json'
@@ -58,7 +58,7 @@ export default function ManageCourse() {
     const handleTogglePublish = async () => {
         setPublishLoading(true);
         try {
-            const response = await fetch(`http://localhost:3000/api/courses/${courseId}/publish`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api/courses/${courseId}/publish`, {
                 method: 'PATCH',
                 headers: {
                     'authorization': localStorage.getItem('token'),
@@ -290,7 +290,7 @@ function ContentTab({ course }) {
     const addSection = async (sectionData) => {
         setLoading(true);
         try {
-            const response = await fetch(`http://localhost:3000/api/courses/${course._id}/curriculum/sections`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api/courses/${course._id}/curriculum/sections`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -313,7 +313,7 @@ function ContentTab({ course }) {
     const addLecture = async (sectionId, lectureData) => {
         setLoading(true);
         try {
-            const response = await fetch(`http://localhost:3000/api/courses/${course._id}/curriculum/sections/${sectionId}/lectures`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api/courses/${course._id}/curriculum/sections/${sectionId}/lectures`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -889,7 +889,7 @@ function SettingsTab({ course, onUpdate }) {
             const uploadFormData = new FormData();
             uploadFormData.append('image', file);
 
-            const response = await fetch('http://localhost:3000/api/upload/image', {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api/upload/image`, {
                 method: 'POST',
                 headers: {
                     'authorization': localStorage.getItem('token')
@@ -901,7 +901,7 @@ function SettingsTab({ course, onUpdate }) {
                 const data = await response.json();
                 setFormData(prev => ({
                     ...prev,
-                    thumbnail: `http://localhost:3000${data.url}`
+                    thumbnail: `${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}${data.url}`
                 }));
             } else {
                 const errorData = await response.json();
@@ -918,7 +918,7 @@ function SettingsTab({ course, onUpdate }) {
     const handleSave = async () => {
         setSaving(true);
         try {
-            const response = await fetch(`http://localhost:3000/api/courses/${course._id}`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api/courses/${course._id}`, {
                 method: 'PUT',
                 headers: {
                     'authorization': localStorage.getItem('token'),

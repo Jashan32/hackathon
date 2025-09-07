@@ -34,7 +34,7 @@ export default function Tas() {
 
     const fetchCourses = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/courses/educator/${localStorage.getItem("userId")}`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api/courses/educator/${localStorage.getItem("userId")}`, {
                 headers: {
                     'authorization': localStorage.getItem('token')
                 }
@@ -51,7 +51,7 @@ export default function Tas() {
 
     const fetchAllTas = async () => {
         try {
-            const response = await fetch('http://localhost:3000/api/tas/educator', {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api/tas/educator`, {
                 headers: {
                     'authorization': localStorage.getItem('token')
                 }
@@ -223,7 +223,7 @@ function TaCard({ ta, onAction, onRefresh }) {
     const handleRemoveTA = async () => {
         if (window.confirm(`Are you sure you want to remove ${ta.name} as a TA?`)) {
             try {
-                const response = await fetch(`http://localhost:3000/api/tas/${ta.id}/course/${ta.courseId}`, {
+                const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api/tas/${ta.id}/course/${ta.courseId}`, {
                     method: 'DELETE',
                     headers: {
                         'authorization': localStorage.getItem('token')

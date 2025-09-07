@@ -47,10 +47,10 @@ export default function StuSettings() {
 
     const fetchUserProfile = async () => {
         try {
-            const response = await fetch('http://localhost:3000/api/auth/me', {
+            setProfileLoading(true);
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api/auth/me`, {
                 headers: {
-                    'authorization': localStorage.getItem('token'),
-                    'Content-Type': 'application/json'
+                    'authorization': localStorage.getItem('token')
                 }
             });
 
@@ -73,7 +73,7 @@ export default function StuSettings() {
 
     const fetchLearningPreferences = async () => {
         try {
-            const response = await fetch('http://localhost:3000/api/auth/learning-preferences', {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api/auth/learning-preferences`, {
                 headers: {
                     'authorization': localStorage.getItem('token'),
                     'Content-Type': 'application/json'
@@ -167,7 +167,7 @@ export default function StuSettings() {
             const formData = new FormData();
             formData.append('image', file);
 
-            const response = await fetch('http://localhost:3000/api/upload/image', {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api/upload/image`, {
                 method: 'POST',
                 headers: {
                     'authorization': localStorage.getItem('token')
@@ -179,7 +179,7 @@ export default function StuSettings() {
                 const data = await response.json();
                 setProfileData(prev => ({
                     ...prev,
-                    profilePicture: `http://localhost:3000${data.url}`
+                    profilePicture: `${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}${data.url}`
                 }));
                 setErrors(prev => ({
                     ...prev,
@@ -256,7 +256,7 @@ export default function StuSettings() {
         setSuccessMessage('');
         
         try {
-            const response = await fetch('http://localhost:3000/api/auth/update-profile', {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api/auth/update-profile`, {
                 method: 'PUT',
                 headers: {
                     'authorization': localStorage.getItem('token'),
@@ -293,7 +293,7 @@ export default function StuSettings() {
         setSuccessMessage('');
         
         try {
-            const response = await fetch('http://localhost:3000/api/auth/change-password', {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api/auth/change-password`, {
                 method: 'PUT',
                 headers: {
                     'authorization': localStorage.getItem('token'),
@@ -330,7 +330,7 @@ export default function StuSettings() {
         setSuccessMessage('');
         
         try {
-            const response = await fetch('http://localhost:3000/api/auth/learning-preferences', {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api/auth/learning-preferences`, {
                 method: 'PUT',
                 headers: {
                     'authorization': localStorage.getItem('token'),
@@ -365,7 +365,7 @@ export default function StuSettings() {
         setSuccessMessage('');
         
         try {
-            const response = await fetch('http://localhost:3000/api/auth/learning-preferences/reset', {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api/auth/learning-preferences/reset`, {
                 method: 'POST',
                 headers: {
                     'authorization': localStorage.getItem('token'),

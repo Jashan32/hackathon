@@ -49,7 +49,7 @@ export default function IndustryRatings({ courseId }) {
     const fetchIndustryRatings = async () => {
         try {
             setLoading(true);
-            const response = await fetch(`http://localhost:3000/api/courses/${courseId}/industry-ratings`);
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api/courses/${courseId}/industry-ratings`);
             if (response.ok) {
                 const data = await response.json();
                 setRatings(data.ratings);

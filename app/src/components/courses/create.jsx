@@ -67,7 +67,7 @@ export default function CreateCourse() {
             const formData = new FormData();
             formData.append('image', file);
 
-            const response = await fetch('http://localhost:3000/api/upload/image', {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api/upload/image`, {
                 method: 'POST',
                 headers: {
                     'authorization': localStorage.getItem('token')
@@ -79,7 +79,7 @@ export default function CreateCourse() {
                 const data = await response.json();
                 setFormData(prev => ({
                     ...prev,
-                    thumbnail: `http://localhost:3000${data.url}`
+                    thumbnail: `${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}${data.url}`
                 }));
                 // Clear any previous errors
                 setErrors(prev => ({
@@ -142,7 +142,7 @@ export default function CreateCourse() {
 
         setLoading(true);
         try {
-            const response = await fetch('http://localhost:3000/api/courses/', {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api/courses/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

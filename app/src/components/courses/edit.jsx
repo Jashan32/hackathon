@@ -44,7 +44,7 @@ export default function EditCourse() {
 
     const fetchCourse = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/courses/${courseId}`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api/courses/${courseId}`, {
                 headers: {
                     'authorization': localStorage.getItem('token'),
                     'Content-Type': 'application/json'
@@ -176,7 +176,7 @@ export default function EditCourse() {
 
         setSaving(true);
         try {
-            const response = await fetch(`http://localhost:3000/api/courses/${courseId}`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api/courses/${courseId}`, {
                 method: 'PUT',
                 headers: {
                     'authorization': localStorage.getItem('token'),

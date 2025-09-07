@@ -43,7 +43,7 @@ export default function AddTas() {
 
     const fetchCourses = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/courses/educator/${localStorage.getItem("userId")}`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api/courses/educator/${localStorage.getItem("userId")}`, {
                 headers: {
                     'authorization': localStorage.getItem('token')
                 }
@@ -66,7 +66,7 @@ export default function AddTas() {
         
         setLoadingStudents(true);
         try {
-            const response = await fetch(`http://localhost:3000/api/tas/course/${selectedCourse}/available-students`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api/tas/course/${selectedCourse}/available-students`, {
                 headers: {
                     'authorization': localStorage.getItem('token')
                 }
@@ -119,7 +119,7 @@ export default function AddTas() {
         setSuccess('');
 
         try {
-            const response = await fetch('http://localhost:3000/api/tas/assign', {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api/tas/assign`, {
                 method: 'POST',
                 headers: {
                     'authorization': localStorage.getItem('token'),

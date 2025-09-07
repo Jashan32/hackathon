@@ -36,7 +36,7 @@ export default function CourseAnalysis() {
 
     const fetchCourseData = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/courses/${courseId}`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api/courses/${courseId}`, {
                 headers: {
                     'authorization': localStorage.getItem('token'),
                     'Content-Type': 'application/json'

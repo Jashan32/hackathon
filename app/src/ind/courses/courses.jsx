@@ -61,7 +61,7 @@ export default function IndCourses() {
     const fetchCourses = async () => {
         try {
             setLoading(true);
-            const response = await fetch('http://localhost:3000/api/courses/');
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api/courses/`);
             if (response.ok) {
                 const data = await response.json();
                 setCourses(data.courses);
@@ -75,7 +75,7 @@ export default function IndCourses() {
 
     const fetchRatedCourses = async () => {
         try {
-            const response = await fetch('http://localhost:3000/api/courses/industry-ratings', {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api/courses/industry-ratings`, {
                 headers: {
                     'authorization': localStorage.getItem('token')
                 }

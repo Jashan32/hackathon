@@ -191,7 +191,7 @@ export default function ViewEnrolled() {
     const fetchEnrolledCourse = async () => {
         try {
             setLoading(true);
-            const response = await fetch(`http://localhost:3000/api/courses/${courseId}/curriculum`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api/courses/${courseId}/curriculum`, {
                 headers: {
                     'authorization': `Bearer ${localStorage.getItem('token')}`
                 }

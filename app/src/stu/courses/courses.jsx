@@ -60,7 +60,7 @@ export default function StuCourses() {
     const fetchCourses = async () => {
         try {
             setLoading(true);
-            const response = await fetch('http://localhost:3000/api/courses/');
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api/courses/`);
             if (response.ok) {
                 const data = await response.json();
                 setCourses(data.courses);
@@ -74,7 +74,7 @@ export default function StuCourses() {
 
     const fetchEnrolledCourses = async () => {
         try {
-            const response = await fetch('http://localhost:3000/api/courses/student/enrolled', {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api/courses/student/enrolled`, {
                 headers: {
                     'authorization': localStorage.getItem('token')
                 }
@@ -114,7 +114,7 @@ export default function StuCourses() {
 
     const handleEnroll = async (courseId) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/courses/${courseId}/enroll`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api/courses/${courseId}/enroll`, {
                 method: 'POST',
                 headers: {
                     'authorization': localStorage.getItem('token'),

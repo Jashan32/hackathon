@@ -64,7 +64,7 @@ export default function Enrolled() {
     const fetchEnrolledCourses = async () => {
         try {
             setLoading(true);
-            const response = await fetch('http://localhost:3000/api/courses/student/enrolled', {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api/courses/student/enrolled`, {
                 headers: {
                     'authorization': localStorage.getItem('token')
                 }

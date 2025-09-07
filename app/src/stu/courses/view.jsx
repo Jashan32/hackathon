@@ -60,7 +60,7 @@ export default function ViewCourse() {
     const fetchCourse = async () => {
         try {
             setLoading(true);
-            const response = await fetch(`http://localhost:3000/api/courses/${courseId}`);
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api/courses/${courseId}`);
             if (response.ok) {
                 const data = await response.json();
                 setCourse({
@@ -143,7 +143,7 @@ export default function ViewCourse() {
 
     const checkEnrollmentStatus = async () => {
         try {
-            const response = await fetch('http://localhost:3000/api/courses/student/enrolled', {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api/courses/student/enrolled`, {
                 headers: {
                     'authorization': `Bearer ${localStorage.getItem('token')}`
                 }
@@ -164,7 +164,7 @@ export default function ViewCourse() {
     const handleEnroll = async () => {
         try {
             setEnrolling(true);
-            const response = await fetch(`http://localhost:3000/api/courses/${courseId}/enroll`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api/courses/${courseId}/enroll`, {
                 method: 'POST',
                 headers: {
                     'authorization': `Bearer ${localStorage.getItem('token')}`,

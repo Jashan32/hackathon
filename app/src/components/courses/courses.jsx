@@ -11,7 +11,7 @@ export default function Courses(){
     useEffect(() => {
         const fetchCourses = async() => {
             try {
-                const res = await fetch(`http://localhost:3000/api/courses/educator/${localStorage.getItem("userId")}`, {
+                const res = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api/courses/educator/${localStorage.getItem("userId")}`, {
                     headers: {
                         authorization: localStorage.getItem("token")
                     },
@@ -31,7 +31,7 @@ export default function Courses(){
 
     const togglePublishStatus = async (courseId, currentStatus) => {
         try {
-            const res = await fetch(`http://localhost:3000/api/courses/${courseId}/publish`, {
+            const res = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api/courses/${courseId}/publish`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
