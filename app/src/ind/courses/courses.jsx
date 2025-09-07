@@ -12,7 +12,6 @@ import {
     Award,
     PlayCircle,
     User,
-    DollarSign,
     ChevronDown,
     Heart,
     Share2,

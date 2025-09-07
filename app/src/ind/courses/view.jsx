@@ -298,7 +298,7 @@ export default function IndViewCourse() {
                     <div className="bg-[#222222] rounded-lg p-4 border border-white/10">
                         <div className="text-center mb-4">
                             <div className="text-3xl font-bold text-[#7848ff] mb-2">
-                                ${course.price || 'Free'}
+                                ₹{course.price || 'Free'}
                             </div>
                             {rating && (
                                 <div className="text-sm text-green-400">

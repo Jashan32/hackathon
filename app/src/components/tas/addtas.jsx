@@ -315,7 +315,7 @@ export default function AddTas() {
                                     </div>
                                     <div>
                                         <span className="text-[#888888]">Price:</span>
-                                        <span className="text-white ml-[8px]">${selectedCourseData.price}</span>
+                                        <span className="text-white ml-[8px]">₹{selectedCourseData.price}</span>
                                     </div>
                                 </div>
                             </div>
