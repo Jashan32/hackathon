@@ -34,7 +34,7 @@ export default function Auth() {
             if (data.success) {
                 localStorage.setItem('token', data.data.token);
                 localStorage.setItem('authorization', data.data.token);
-                localStorage.setItem('userId', JSON.stringify(data.data.user.id));
+                localStorage.setItem('userId', data.data.user.id);
                 localStorage.setItem('isLoggedIn', 'true');
 
                 // Navigate based on role
@@ -80,7 +80,7 @@ export default function Auth() {
             if (data.success) {
                 localStorage.setItem('token', data.data.token);
                 localStorage.setItem('authorization', data.data.token);
-                localStorage.setItem('userId', JSON.stringify(data.data.user.id));
+                localStorage.setItem('userId', data.data.user.id);
                 localStorage.setItem('isLoggedIn', 'true');
 
                 // Navigate based on role
